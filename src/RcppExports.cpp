@@ -286,26 +286,6 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// ac_ag_get_name_full
-std::string ac_ag_get_name_full(const AcAntigen& ag);
-RcppExport SEXP _Racmacs_ac_ag_get_name_full(SEXP agSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::traits::input_parameter< const AcAntigen& >::type ag(agSEXP);
-    rcpp_result_gen = Rcpp::wrap(ac_ag_get_name_full(ag));
-    return rcpp_result_gen;
-END_RCPP
-}
-// ac_ag_get_name_abbreviated
-std::string ac_ag_get_name_abbreviated(const AcAntigen& ag);
-RcppExport SEXP _Racmacs_ac_ag_get_name_abbreviated(SEXP agSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::traits::input_parameter< const AcAntigen& >::type ag(agSEXP);
-    rcpp_result_gen = Rcpp::wrap(ac_ag_get_name_abbreviated(ag));
-    return rcpp_result_gen;
-END_RCPP
-}
 // ac_ag_get_extra
 std::string ac_ag_get_extra(const AcAntigen& ag);
 RcppExport SEXP _Racmacs_ac_ag_get_extra(SEXP agSEXP) {
@@ -471,28 +451,6 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< AcAntigen >::type ag(agSEXP);
     Rcpp::traits::input_parameter< std::string >::type value(valueSEXP);
     rcpp_result_gen = Rcpp::wrap(ac_ag_set_name(ag, value));
-    return rcpp_result_gen;
-END_RCPP
-}
-// ac_ag_set_name_full
-AcAntigen ac_ag_set_name_full(AcAntigen ag, std::string value);
-RcppExport SEXP _Racmacs_ac_ag_set_name_full(SEXP agSEXP, SEXP valueSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::traits::input_parameter< AcAntigen >::type ag(agSEXP);
-    Rcpp::traits::input_parameter< std::string >::type value(valueSEXP);
-    rcpp_result_gen = Rcpp::wrap(ac_ag_set_name_full(ag, value));
-    return rcpp_result_gen;
-END_RCPP
-}
-// ac_ag_set_name_abbreviated
-AcAntigen ac_ag_set_name_abbreviated(AcAntigen ag, std::string value);
-RcppExport SEXP _Racmacs_ac_ag_set_name_abbreviated(SEXP agSEXP, SEXP valueSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::traits::input_parameter< AcAntigen >::type ag(agSEXP);
-    Rcpp::traits::input_parameter< std::string >::type value(valueSEXP);
-    rcpp_result_gen = Rcpp::wrap(ac_ag_set_name_abbreviated(ag, value));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -1035,6 +993,16 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// ac_sr_get_species
+std::string ac_sr_get_species(const AcSerum& sr);
+RcppExport SEXP _Racmacs_ac_sr_get_species(SEXP srSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< const AcSerum& >::type sr(srSEXP);
+    rcpp_result_gen = Rcpp::wrap(ac_sr_get_species(sr));
+    return rcpp_result_gen;
+END_RCPP
+}
 // ac_sr_get_clade
 std::vector<std::string> ac_sr_get_clade(const AcSerum& sr);
 RcppExport SEXP _Racmacs_ac_sr_get_clade(SEXP srSEXP) {
@@ -1062,26 +1030,6 @@ BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::traits::input_parameter< const AcSerum& >::type sr(srSEXP);
     rcpp_result_gen = Rcpp::wrap(ac_sr_get_name(sr));
-    return rcpp_result_gen;
-END_RCPP
-}
-// ac_sr_get_name_full
-std::string ac_sr_get_name_full(const AcSerum& sr);
-RcppExport SEXP _Racmacs_ac_sr_get_name_full(SEXP srSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::traits::input_parameter< const AcSerum& >::type sr(srSEXP);
-    rcpp_result_gen = Rcpp::wrap(ac_sr_get_name_full(sr));
-    return rcpp_result_gen;
-END_RCPP
-}
-// ac_sr_get_name_abbreviated
-std::string ac_sr_get_name_abbreviated(const AcSerum& sr);
-RcppExport SEXP _Racmacs_ac_sr_get_name_abbreviated(SEXP srSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::traits::input_parameter< const AcSerum& >::type sr(srSEXP);
-    rcpp_result_gen = Rcpp::wrap(ac_sr_get_name_abbreviated(sr));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -1219,6 +1167,17 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// ac_sr_set_species
+AcSerum ac_sr_set_species(AcSerum sr, std::string value);
+RcppExport SEXP _Racmacs_ac_sr_set_species(SEXP srSEXP, SEXP valueSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< AcSerum >::type sr(srSEXP);
+    Rcpp::traits::input_parameter< std::string >::type value(valueSEXP);
+    rcpp_result_gen = Rcpp::wrap(ac_sr_set_species(sr, value));
+    return rcpp_result_gen;
+END_RCPP
+}
 // ac_sr_set_clade
 AcSerum ac_sr_set_clade(AcSerum sr, std::vector<std::string> value);
 RcppExport SEXP _Racmacs_ac_sr_set_clade(SEXP srSEXP, SEXP valueSEXP) {
@@ -1249,28 +1208,6 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< AcSerum >::type sr(srSEXP);
     Rcpp::traits::input_parameter< std::string >::type value(valueSEXP);
     rcpp_result_gen = Rcpp::wrap(ac_sr_set_name(sr, value));
-    return rcpp_result_gen;
-END_RCPP
-}
-// ac_sr_set_name_full
-AcSerum ac_sr_set_name_full(AcSerum sr, std::string value);
-RcppExport SEXP _Racmacs_ac_sr_set_name_full(SEXP srSEXP, SEXP valueSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::traits::input_parameter< AcSerum >::type sr(srSEXP);
-    Rcpp::traits::input_parameter< std::string >::type value(valueSEXP);
-    rcpp_result_gen = Rcpp::wrap(ac_sr_set_name_full(sr, value));
-    return rcpp_result_gen;
-END_RCPP
-}
-// ac_sr_set_name_abbreviated
-AcSerum ac_sr_set_name_abbreviated(AcSerum sr, std::string value);
-RcppExport SEXP _Racmacs_ac_sr_set_name_abbreviated(SEXP srSEXP, SEXP valueSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::traits::input_parameter< AcSerum >::type sr(srSEXP);
-    Rcpp::traits::input_parameter< std::string >::type value(valueSEXP);
-    rcpp_result_gen = Rcpp::wrap(ac_sr_set_name_abbreviated(sr, value));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -1906,8 +1843,6 @@ static const R_CallMethodDef CallEntries[] = {
     {"_Racmacs_ac_ag_get_annotations", (DL_FUNC) &_Racmacs_ac_ag_get_annotations, 1},
     {"_Racmacs_ac_ag_get_labids", (DL_FUNC) &_Racmacs_ac_ag_get_labids, 1},
     {"_Racmacs_ac_ag_get_name", (DL_FUNC) &_Racmacs_ac_ag_get_name, 1},
-    {"_Racmacs_ac_ag_get_name_full", (DL_FUNC) &_Racmacs_ac_ag_get_name_full, 1},
-    {"_Racmacs_ac_ag_get_name_abbreviated", (DL_FUNC) &_Racmacs_ac_ag_get_name_abbreviated, 1},
     {"_Racmacs_ac_ag_get_extra", (DL_FUNC) &_Racmacs_ac_ag_get_extra, 1},
     {"_Racmacs_ac_ag_get_lineage", (DL_FUNC) &_Racmacs_ac_ag_get_lineage, 1},
     {"_Racmacs_ac_ag_get_reassortant", (DL_FUNC) &_Racmacs_ac_ag_get_reassortant, 1},
@@ -1924,8 +1859,6 @@ static const R_CallMethodDef CallEntries[] = {
     {"_Racmacs_ac_ag_set_annotations", (DL_FUNC) &_Racmacs_ac_ag_set_annotations, 2},
     {"_Racmacs_ac_ag_set_labids", (DL_FUNC) &_Racmacs_ac_ag_set_labids, 2},
     {"_Racmacs_ac_ag_set_name", (DL_FUNC) &_Racmacs_ac_ag_set_name, 2},
-    {"_Racmacs_ac_ag_set_name_full", (DL_FUNC) &_Racmacs_ac_ag_set_name_full, 2},
-    {"_Racmacs_ac_ag_set_name_abbreviated", (DL_FUNC) &_Racmacs_ac_ag_set_name_abbreviated, 2},
     {"_Racmacs_ac_ag_set_extra", (DL_FUNC) &_Racmacs_ac_ag_set_extra, 2},
     {"_Racmacs_ac_ag_set_lineage", (DL_FUNC) &_Racmacs_ac_ag_set_lineage, 2},
     {"_Racmacs_ac_ag_set_reassortant", (DL_FUNC) &_Racmacs_ac_ag_set_reassortant, 2},
@@ -1977,11 +1910,10 @@ static const R_CallMethodDef CallEntries[] = {
     {"_Racmacs_ac_sr_get_date", (DL_FUNC) &_Racmacs_ac_sr_get_date, 1},
     {"_Racmacs_ac_sr_get_reference", (DL_FUNC) &_Racmacs_ac_sr_get_reference, 1},
     {"_Racmacs_ac_sr_get_passage", (DL_FUNC) &_Racmacs_ac_sr_get_passage, 1},
+    {"_Racmacs_ac_sr_get_species", (DL_FUNC) &_Racmacs_ac_sr_get_species, 1},
     {"_Racmacs_ac_sr_get_clade", (DL_FUNC) &_Racmacs_ac_sr_get_clade, 1},
     {"_Racmacs_ac_sr_get_annotations", (DL_FUNC) &_Racmacs_ac_sr_get_annotations, 1},
     {"_Racmacs_ac_sr_get_name", (DL_FUNC) &_Racmacs_ac_sr_get_name, 1},
-    {"_Racmacs_ac_sr_get_name_full", (DL_FUNC) &_Racmacs_ac_sr_get_name_full, 1},
-    {"_Racmacs_ac_sr_get_name_abbreviated", (DL_FUNC) &_Racmacs_ac_sr_get_name_abbreviated, 1},
     {"_Racmacs_ac_sr_get_extra", (DL_FUNC) &_Racmacs_ac_sr_get_extra, 1},
     {"_Racmacs_ac_sr_get_lineage", (DL_FUNC) &_Racmacs_ac_sr_get_lineage, 1},
     {"_Racmacs_ac_sr_get_reassortant", (DL_FUNC) &_Racmacs_ac_sr_get_reassortant, 1},
@@ -1995,11 +1927,10 @@ static const R_CallMethodDef CallEntries[] = {
     {"_Racmacs_ac_sr_set_date", (DL_FUNC) &_Racmacs_ac_sr_set_date, 2},
     {"_Racmacs_ac_sr_set_reference", (DL_FUNC) &_Racmacs_ac_sr_set_reference, 2},
     {"_Racmacs_ac_sr_set_passage", (DL_FUNC) &_Racmacs_ac_sr_set_passage, 2},
+    {"_Racmacs_ac_sr_set_species", (DL_FUNC) &_Racmacs_ac_sr_set_species, 2},
     {"_Racmacs_ac_sr_set_clade", (DL_FUNC) &_Racmacs_ac_sr_set_clade, 2},
     {"_Racmacs_ac_sr_set_annotations", (DL_FUNC) &_Racmacs_ac_sr_set_annotations, 2},
     {"_Racmacs_ac_sr_set_name", (DL_FUNC) &_Racmacs_ac_sr_set_name, 2},
-    {"_Racmacs_ac_sr_set_name_full", (DL_FUNC) &_Racmacs_ac_sr_set_name_full, 2},
-    {"_Racmacs_ac_sr_set_name_abbreviated", (DL_FUNC) &_Racmacs_ac_sr_set_name_abbreviated, 2},
     {"_Racmacs_ac_sr_set_extra", (DL_FUNC) &_Racmacs_ac_sr_set_extra, 2},
     {"_Racmacs_ac_sr_set_lineage", (DL_FUNC) &_Racmacs_ac_sr_set_lineage, 2},
     {"_Racmacs_ac_sr_set_reassortant", (DL_FUNC) &_Racmacs_ac_sr_set_reassortant, 2},
