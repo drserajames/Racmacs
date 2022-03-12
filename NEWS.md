@@ -157,4 +157,6 @@
 * Issue a warning if duplicate antigen or serum names are found when creating a map
 
 # Racmacs 1.1.34
+
+# Racmacs 1.1.35
 * Add antigen and sera attributes: `agLineage()`, `srLineage()`, `agReassortant()`, `srReassortant()`, `agStrings()`, `srStrings()`, `agContinent()`, `agNucleotideSequences()`, `srNucleotideSequences()` 
