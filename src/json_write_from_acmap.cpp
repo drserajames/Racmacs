@@ -86,6 +86,7 @@ std::string acmap_to_json(
     if (!sr.isdefault("sequence"))           srval.AddMember("A", jsonifya(sr.get_sequence(), allocator), allocator);
     if (!sr.isdefault("date"))               srval.AddMember("D", jsonifya(sr.get_date(), allocator), allocator);
     if (!sr.isdefault("id"))                 srval.AddMember("I", jsonifya(sr.get_id(), allocator), allocator);
+    if (!sr.isdefault("species"))           srval.AddMember("s", jsonifya(sr.get_species(), allocator), allocator);
     if (sr.get_homologous_ags().n_elem > 0)  srval.AddMember("h", jsonifya(sr.get_homologous_ags(), allocator), allocator);
     if (!sr.isdefault("lineage"))            srval.AddMember("L", jsonifya(sr.get_lineage(), allocator), allocator);
     if (!sr.isdefault("reassortant"))        srval.AddMember("R", jsonifya(sr.get_reassortant(), allocator), allocator);

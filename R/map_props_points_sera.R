@@ -63,6 +63,7 @@ sera_setter <- function(fn, type) {
 #'     "srLineage", "srLineage<-",
 #'     "srReassortant", "srReassortant<-",
 #'     "srStrings", "srStrings<-"
+#'     "srSpecies", "srSpecies<-"
 #'   ),
 #'   args    = c("map")
 #' )
@@ -78,6 +79,8 @@ srPassage           <- sera_getter(ac_sr_get_passage)
 srLineage           <- sera_getter(ac_sr_get_lineage)
 srReassortant       <- sera_getter(ac_sr_get_reassortant)
 srStrings           <- sera_getter(ac_sr_get_strings)
+srSpecies           <- sera_getter(ac_sr_get_species)
+
 srGroupValues       <- sera_getter(ac_sr_get_group) # Not exported
 srMatchIDs          <- sera_getter(ac_sr_get_match_id) # Not exported
 
@@ -92,6 +95,7 @@ srMatchIDs          <- sera_getter(ac_sr_get_match_id) # Not exported
 `srLineage<-`           <- sera_setter(ac_sr_set_lineage, "character")
 `srReassortant<-`       <- sera_setter(ac_sr_set_reassortant, "character")
 `srStrings<-`           <- sera_setter(ac_sr_set_strings, "character")
+`srSpecies<-`           <- sera_setter(ac_sr_set_species, "character")
 `srGroupValues<-`       <- sera_setter(ac_sr_set_group, "numeric")
 
 
