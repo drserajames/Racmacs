@@ -3,17 +3,19 @@
 Racmacs.Viewer.prototype.load = function(
     mapData,
     options = {},
-    plotdata
+    plotdata,
+    light
     ){
 
-    // Set default options    
+    // Set default options
     if (options["grid.col"] === undefined) options["grid.col"] = "#cfcfcf";
+    if (options["background.col"] === undefined) options["background.col"] = "#ffffff";
     if (options["point.opacity"] === undefined || options["point.opacity"] === null) {
         options["point.opacity"] = this.styleset.noselections.unhovered.unselected.opacity;
     };
 
-    if(options.maintain_viewpoint){ 
-        var selected_points = this.getSelectedPointIndices(); 
+    if(options.maintain_viewpoint){
+        var selected_points = this.getSelectedPointIndices();
         var selected_projection = this.data.projection();
     }
 
@@ -127,7 +129,33 @@ Racmacs.Viewer.prototype.load = function(
             });
         }
 
-        // Add any boostrap info
+        // Set the background color
+        this.setBackground(options["background.col"]);
+
+        // Lights
+        this.scene.clearLights();
+
+        if (!light || light.length === 0) {
+
+            // Default lighting
+            this.scene.addLight({
+                position: [-1,1,1],
+                lighttype: "directional",
+                intensity: 1.0
+            });
+
+        } else {
+
+            // Add specified lighting
+            for(var i=0; i<light.length; i++){
+
+                this.scene.addLight(light[i]);
+
+            }
+
+        }
+
+        // Add any bootstrap info
         var bootstrap = this.data.bootstrap();
         if(bootstrap !== undefined){
             this.showBootstrapPoints(bootstrap);
@@ -143,10 +171,10 @@ Racmacs.Viewer.prototype.load = function(
 
         // Set camera zoom
         if(this.data.numProjections() > 0 && !options.maintain_viewpoint) {
-        
+
             var zoom = this.data.getViewerSetting("zoom");
             if(zoom === null){
-                
+
                 var scale = this.scene.getWorldScale();
                 xlim = [xlim[0]*scale[0], xlim[1]*scale[0]];
                 ylim = [ylim[0]*scale[1], ylim[1]*scale[1]];
@@ -199,7 +227,7 @@ Racmacs.Viewer.prototype.load = function(
             this.colorpanel.showColorByGroup();
 
         } else {
-            
+
             this.colorpanel.hideColorByGroup();
 
         }
@@ -229,8 +257,8 @@ Racmacs.Viewer.prototype.load = function(
         this.updatePointStyles();
 
         // Reselect any points
-        if(options.maintain_viewpoint){ 
-            this.selectByPointIndices(selected_points); 
+        if(options.maintain_viewpoint){
+            this.selectByPointIndices(selected_points);
             this.switchToProjection(selected_projection);
         }
 
@@ -259,8 +287,16 @@ Racmacs.Viewer.prototype.load = function(
         // Update the stress
         this.updateStress(this.data.stress());
 
+        // Set viewpoint
+        if(options.translation) this.scene.setTranslation(options.translation);
+        if(options.rotation)    this.scene.setRotation(options.rotation);
+        if(options.zoom)        this.camera.setZoom(options.zoom);
+
         // Note that content is now loaded
         this.contentLoaded = true;
+
+        // Hack to resize points
+        this.resizePoints(1.0);
 
     }
 
