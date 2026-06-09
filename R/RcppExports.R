@@ -545,8 +545,8 @@ ac_titer_layer_sd <- function(titer_layers, dilution_stepsize) {
     .Call('_Racmacs_ac_titer_layer_sd', PACKAGE = 'Racmacs', titer_layers, dilution_stepsize)
 }
 
-ac_move_trapped_points <- function(optimization, titertable, grid_spacing, options, max_iterations = 10L, dilution_stepsize = 1.0) {
-    .Call('_Racmacs_ac_move_trapped_points', PACKAGE = 'Racmacs', optimization, titertable, grid_spacing, options, max_iterations, dilution_stepsize)
+ac_move_trapped_points <- function(optimization, titertable, grid_spacing, options, max_iterations = 10L, dilution_stepsize = 1.0, method = "racmacs", num_randomizations = 10L, randomize_distance = 20.0) {
+    .Call('_Racmacs_ac_move_trapped_points', PACKAGE = 'Racmacs', optimization, titertable, grid_spacing, options, max_iterations, dilution_stepsize, method, num_randomizations, randomize_distance)
 }
 
 ac_coords_stress <- function(titers, min_colbasis, fixed_colbases, ag_reactivity_adjustments, ag_coords, sr_coords, dilution_stepsize) {

@@ -1532,8 +1532,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // ac_move_trapped_points
-AcOptimization ac_move_trapped_points(AcOptimization optimization, AcTiterTable titertable, double grid_spacing, AcOptimizerOptions options, int max_iterations, double dilution_stepsize);
-RcppExport SEXP _Racmacs_ac_move_trapped_points(SEXP optimizationSEXP, SEXP titertableSEXP, SEXP grid_spacingSEXP, SEXP optionsSEXP, SEXP max_iterationsSEXP, SEXP dilution_stepsizeSEXP) {
+AcOptimization ac_move_trapped_points(AcOptimization optimization, AcTiterTable titertable, double grid_spacing, AcOptimizerOptions options, int max_iterations, double dilution_stepsize, std::string method, int num_randomizations, double randomize_distance);
+RcppExport SEXP _Racmacs_ac_move_trapped_points(SEXP optimizationSEXP, SEXP titertableSEXP, SEXP grid_spacingSEXP, SEXP optionsSEXP, SEXP max_iterationsSEXP, SEXP dilution_stepsizeSEXP, SEXP methodSEXP, SEXP num_randomizationsSEXP, SEXP randomize_distanceSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -1543,7 +1543,10 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< AcOptimizerOptions >::type options(optionsSEXP);
     Rcpp::traits::input_parameter< int >::type max_iterations(max_iterationsSEXP);
     Rcpp::traits::input_parameter< double >::type dilution_stepsize(dilution_stepsizeSEXP);
-    rcpp_result_gen = Rcpp::wrap(ac_move_trapped_points(optimization, titertable, grid_spacing, options, max_iterations, dilution_stepsize));
+    Rcpp::traits::input_parameter< std::string >::type method(methodSEXP);
+    Rcpp::traits::input_parameter< int >::type num_randomizations(num_randomizationsSEXP);
+    Rcpp::traits::input_parameter< double >::type randomize_distance(randomize_distanceSEXP);
+    rcpp_result_gen = Rcpp::wrap(ac_move_trapped_points(optimization, titertable, grid_spacing, options, max_iterations, dilution_stepsize, method, num_randomizations, randomize_distance));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -2021,7 +2024,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_Racmacs_ac_titer_merge_type", (DL_FUNC) &_Racmacs_ac_titer_merge_type, 1},
     {"_Racmacs_ac_titer_layer_merge_types", (DL_FUNC) &_Racmacs_ac_titer_layer_merge_types, 1},
     {"_Racmacs_ac_titer_layer_sd", (DL_FUNC) &_Racmacs_ac_titer_layer_sd, 2},
-    {"_Racmacs_ac_move_trapped_points", (DL_FUNC) &_Racmacs_ac_move_trapped_points, 6},
+    {"_Racmacs_ac_move_trapped_points", (DL_FUNC) &_Racmacs_ac_move_trapped_points, 9},
     {"_Racmacs_ac_coords_stress", (DL_FUNC) &_Racmacs_ac_coords_stress, 7},
     {"_Racmacs_ac_point_stresses", (DL_FUNC) &_Racmacs_ac_point_stresses, 6},
     {"_Racmacs_ac_point_residuals", (DL_FUNC) &_Racmacs_ac_point_residuals, 2},

@@ -8,7 +8,90 @@
 
 #include "acmap_optimization.h"
 #include "ac_stress_blobs.h"
+#include "ac_stress.h"
+#include "ac_relax_coords.h"
 #include "ac_optimizer_options.h"
+
+// Stress contribution of one antigen across all sera
+static double calc_ag_stress(
+    int ag,
+    const arma::mat &ag_coords,
+    const arma::mat &sr_coords,
+    const arma::mat &tabledists,
+    const arma::imat &titertypes,
+    double dilution_stepsize
+) {
+  double stress = 0.0;
+  for (arma::uword sr = 0; sr < sr_coords.n_rows; sr++) {
+    arma::sword ttype = titertypes(ag, sr);
+    if (ttype <= 0) continue;
+    double map_dist = arma::norm(arma::vectorise(ag_coords.row(ag) - sr_coords.row(sr)));
+    double td = tabledists(ag, sr);
+    stress += ac_ptStress(map_dist, td, ttype, dilution_stepsize);
+  }
+  return stress;
+}
+
+// LispMDS method: for each antigen, try num_randomizations random perturbations
+// and keep the position with the lowest stress (if lower than original).
+static AcOptimization move_trapped_points_lispmds(
+    AcOptimization optimization,
+    const arma::mat &tabledists,
+    const arma::imat &titertypes,
+    const AcOptimizerOptions &options,
+    int num_randomizations,
+    double randomize_distance,
+    double dilution_stepsize
+) {
+
+  int num_ags = optimization.num_ags();
+  int num_sr  = optimization.num_sr();
+  arma::mat ag_coords = optimization.get_ag_base_coords();
+  arma::mat sr_coords = optimization.get_sr_base_coords();
+  arma::uword ndims   = ag_coords.n_cols;
+
+  // All sera are fixed throughout — only the test antigen is free
+  arma::uvec fixed_sera = arma::regspace<arma::uvec>(0, num_sr - 1);
+
+  for (int ag = 0; ag < num_ags; ag++) {
+
+    double orig_stress = calc_ag_stress(ag, ag_coords, sr_coords, tabledists, titertypes, dilution_stepsize);
+
+    arma::rowvec best_coords = ag_coords.row(ag);
+    double best_stress = orig_stress;
+
+    // All antigens fixed except this one
+    arma::uvec fixed_ags = arma::regspace<arma::uvec>(0, num_ags - 1);
+    fixed_ags.shed_row(ag);
+
+    for (int i = 0; i < num_randomizations; i++) {
+
+      // Perturb uniformly by up to randomize_distance in each dimension
+      arma::mat ag_coords_trial = ag_coords;
+      ag_coords_trial.row(ag) += (arma::randu<arma::rowvec>(ndims) * 2.0 - 1.0) * randomize_distance;
+
+      // Relax only this antigen
+      ac_relax_coords(
+        tabledists, titertypes, ag_coords_trial, sr_coords,
+        options, fixed_ags, fixed_sera, arma::mat(), dilution_stepsize
+      );
+
+      double trial_stress = calc_ag_stress(ag, ag_coords_trial, sr_coords, tabledists, titertypes, dilution_stepsize);
+
+      if (trial_stress < best_stress) {
+        best_stress   = trial_stress;
+        best_coords   = ag_coords_trial.row(ag);
+      }
+    }
+
+    if (best_stress < orig_stress) {
+      ag_coords.row(ag) = best_coords;
+    }
+  }
+
+  optimization.set_ag_base_coords(ag_coords);
+  return optimization;
+}
 
 // Check for trapped antigens
 arma::mat check_ag_trapped_points(
@@ -114,9 +197,26 @@ AcOptimization ac_move_trapped_points(
   double grid_spacing,
   AcOptimizerOptions options,
   int max_iterations = 10,
-  double dilution_stepsize = 1.0
+  double dilution_stepsize = 1.0,
+  std::string method = "racmacs",
+  int num_randomizations = 10,
+  double randomize_distance = 20.0
 ){
 
+
+  // Dispatch to LispMDS method if requested
+  if (method == "lispmds") {
+    arma::imat titertypes_l = titertable.get_titer_types();
+    arma::mat tabledists_l = titertable.numeric_table_distances(
+      optimization.get_min_column_basis(),
+      optimization.get_fixed_column_bases(),
+      optimization.get_ag_reactivity_adjustments()
+    );
+    return move_trapped_points_lispmds(
+      optimization, tabledists_l, titertypes_l, options,
+      num_randomizations, randomize_distance, dilution_stepsize
+    );
+  }
 
   // Check antigen and sera trapped points recursively
   if(options.report_progress) REprintf("Checking for trapped points recursively:");
