@@ -75,6 +75,9 @@ points are trapped together in a local optima.</p>
 <span>  optimization_number <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  grid_spacing <span class="op">=</span> <span class="fl">0.25</span>,</span>
 <span>  max_iterations <span class="op">=</span> <span class="fl">10</span>,</span>
+<span>  method <span class="op">=</span> <span class="st">"racmacs"</span>,</span>
+<span>  num_randomizations <span class="op">=</span> <span class="fl">10</span>,</span>
+<span>  randomize_distance <span class="op">=</span> <span class="fl">20</span>,</span>
 <span>  options <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -101,6 +104,21 @@ when searching for more optimal positions</p></dd>
 trapped points then relaxing the map to be performed</p></dd>
 
 
+<dt id="arg-method">method<a class="anchor" aria-label="anchor" href="#arg-method"></a></dt>
+<dd><p>Method to use: <code>"racmacs"</code> (default) uses a systematic grid
+search; <code>"lispmds"</code> uses the LispMDS approach of random perturbations.</p></dd>
+
+
+<dt id="arg-num-randomizations">num_randomizations<a class="anchor" aria-label="anchor" href="#arg-num-randomizations"></a></dt>
+<dd><p>For <code>method = "lispmds"</code>, the number of random
+perturbations to try per antigen.</p></dd>
+
+
+<dt id="arg-randomize-distance">randomize_distance<a class="anchor" aria-label="anchor" href="#arg-randomize-distance"></a></dt>
+<dd><p>For <code>method = "lispmds"</code>, the maximum perturbation
+in each dimension (uniform random draw of up to this distance in either direction).</p></dd>
+
+
 <dt id="arg-options">options<a class="anchor" aria-label="anchor" href="#arg-options"></a></dt>
 <dd><p>List of named optimizer options, see <code><a href="RacOptimizer.options.html">RacOptimizer.options()</a></code></p></dd>
 
@@ -123,8 +141,8 @@ more trapped points are found or <code>max_iterations</code> is reached.</p>
 <code><a href="make.acmap.html">make.acmap()</a></code>,
 <code><a href="optimizeMap.html">optimizeMap()</a></code>,
 <code><a href="randomizeCoords.html">randomizeCoords()</a></code>,
-<code><a href="relaxMapOneStep.html">relaxMapOneStep()</a></code>,
-<code><a href="relaxMap.html">relaxMap()</a></code></p></div>
+<code><a href="relaxMap.html">relaxMap()</a></code>,
+<code><a href="relaxMapOneStep.html">relaxMapOneStep()</a></code></p></div>
     </div>
 
   </div>
