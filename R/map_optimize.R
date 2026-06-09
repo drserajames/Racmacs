@@ -604,6 +604,12 @@ checkHemisphering <- function(
 #'   when searching for more optimal positions
 #' @param max_iterations The maximum number of iterations of searching for
 #'   trapped points then relaxing the map to be performed
+#' @param method Method to use: `"racmacs"` (default) uses a systematic grid
+#'   search; `"lispmds"` uses the LispMDS approach of random perturbations.
+#' @param num_randomizations For `method = "lispmds"`, the number of random
+#'   perturbations to try per antigen.
+#' @param randomize_distance For `method = "lispmds"`, the maximum perturbation
+#'   in each dimension (uniform random draw of up to this distance in either direction).
 #' @param options List of named optimizer options, see `RacOptimizer.options()`
 #'
 #' @returns Returns the acmap object with updated coordinates (if any trapped
@@ -616,6 +622,9 @@ moveTrappedPoints <- function(
   optimization_number = 1,
   grid_spacing = 0.25,
   max_iterations = 10,
+  method = "racmacs",
+  num_randomizations = 10,
+  randomize_distance = 20,
   options = list()
   ) {
 
@@ -626,7 +635,10 @@ moveTrappedPoints <- function(
     grid_spacing = grid_spacing,
     options = do.call(RacOptimizer.options, options),
     max_iterations = max_iterations,
-    dilution_stepsize = dilutionStepsize(map)
+    dilution_stepsize = dilutionStepsize(map),
+    method = method,
+    num_randomizations = as.integer(num_randomizations),
+    randomize_distance = randomize_distance
   )
 
   # Realign optimizations

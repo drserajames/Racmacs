@@ -9,6 +9,9 @@ moveTrappedPoints(
   optimization_number = 1,
   grid_spacing = 0.25,
   max_iterations = 10,
+  method = "racmacs",
+  num_randomizations = 10,
+  randomize_distance = 20,
   options = list()
 )
 }
@@ -22,6 +25,15 @@ when searching for more optimal positions}
 
 \item{max_iterations}{The maximum number of iterations of searching for
 trapped points then relaxing the map to be performed}
+
+\item{method}{Method to use: \code{"racmacs"} (default) uses a systematic grid
+search; \code{"lispmds"} uses the LispMDS approach of random perturbations.}
+
+\item{num_randomizations}{For \code{method = "lispmds"}, the number of random
+perturbations to try per antigen.}
+
+\item{randomize_distance}{For \code{method = "lispmds"}, the maximum perturbation
+in each dimension (uniform random draw of up to this distance in either direction).}
 
 \item{options}{List of named optimizer options, see \code{RacOptimizer.options()}}
 }
@@ -42,12 +54,12 @@ trapped before relaxing the map and searching again, stopping either when no
 more trapped points are found or \code{max_iterations} is reached.
 }
 \seealso{
-Other map optimization functions: 
-\code{\link{RacOptimizer.options}()},
-\code{\link{make.acmap}()},
-\code{\link{optimizeMap}()},
-\code{\link{randomizeCoords}()},
-\code{\link{relaxMapOneStep}()},
-\code{\link{relaxMap}()}
+Other map optimization functions:
+\code{\link[=RacOptimizer.options]{RacOptimizer.options()}},
+\code{\link[=make.acmap]{make.acmap()}},
+\code{\link[=optimizeMap]{optimizeMap()}},
+\code{\link[=randomizeCoords]{randomizeCoords()}},
+\code{\link[=relaxMap]{relaxMap()}},
+\code{\link[=relaxMapOneStep]{relaxMapOneStep()}}
 }
 \concept{map optimization functions}

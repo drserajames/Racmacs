@@ -485,6 +485,32 @@ test_that("Moving trapped points", {
 })
 
 
+# Moving trapped points with lispmds method
+map4_lispmds <- map
+largemap4_lispmds <- largemap
+test_that("Moving trapped points with lispmds method", {
+
+  # On a well-optimized map, lispmds should not increase stress
+  map4_lispmds <- relaxMap(map4_lispmds)
+  stress_before <- mapStress(map4_lispmds)
+  map4_lispmds_moved <- moveTrappedPoints(map4_lispmds, method = "lispmds")
+  expect_lte(mapStress(map4_lispmds_moved), stress_before)
+
+  # On a map with trapped points, lispmds should reduce stress
+  largemap4_lispmds <- relaxMap(largemap4_lispmds)
+  largemap4_lispmds_moved <- moveTrappedPoints(largemap4_lispmds, method = "lispmds")
+  expect_lt(
+    mapStress(largemap4_lispmds_moved),
+    mapStress(largemap4_lispmds)
+  )
+
+  # Custom num_randomizations and randomize_distance are accepted
+  result <- moveTrappedPoints(map4_lispmds, method = "lispmds", num_randomizations = 5, randomize_distance = 10)
+  expect_s3_class(result, "acmap")
+
+})
+
+
 # Randomizing coordinates
 test_that("Randomize map coordinates", {
 
