@@ -18,8 +18,9 @@ Description: A toolkit for making antigenic maps from immunological assay data,
     several strains and incorporate the visualization of associated genetic
     information.
 Depends: R (>= 4.0)
-Imports: 
+Imports:
     Rcpp,
+    parallel,
     jsonlite,
     ks,
     brotli,
