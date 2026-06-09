@@ -57,12 +57,12 @@ running optimizations to make the map otherwise done with \code{acmap()}
 followed by \code{optimizeMap()}.
 }
 \seealso{
-Other map optimization functions: 
-\code{\link{RacOptimizer.options}()},
-\code{\link{moveTrappedPoints}()},
-\code{\link{optimizeMap}()},
-\code{\link{randomizeCoords}()},
-\code{\link{relaxMapOneStep}()},
-\code{\link{relaxMap}()}
+Other map optimization functions:
+\code{\link[=RacOptimizer.options]{RacOptimizer.options()}},
+\code{\link[=moveTrappedPoints]{moveTrappedPoints()}},
+\code{\link[=optimizeMap]{optimizeMap()}},
+\code{\link[=randomizeCoords]{randomizeCoords()}},
+\code{\link[=relaxMap]{relaxMap()}},
+\code{\link[=relaxMapOneStep]{relaxMapOneStep()}}
 }
 \concept{map optimization functions}

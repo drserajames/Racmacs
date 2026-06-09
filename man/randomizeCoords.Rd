@@ -24,12 +24,12 @@ then points are randomized in a box with side length equal to maximum
 table distance multiplied by \code{table_dist_factor}
 }
 \seealso{
-Other map optimization functions: 
-\code{\link{RacOptimizer.options}()},
-\code{\link{make.acmap}()},
-\code{\link{moveTrappedPoints}()},
-\code{\link{optimizeMap}()},
-\code{\link{relaxMapOneStep}()},
-\code{\link{relaxMap}()}
+Other map optimization functions:
+\code{\link[=RacOptimizer.options]{RacOptimizer.options()}},
+\code{\link[=make.acmap]{make.acmap()}},
+\code{\link[=moveTrappedPoints]{moveTrappedPoints()}},
+\code{\link[=optimizeMap]{optimizeMap()}},
+\code{\link[=relaxMap]{relaxMap()}},
+\code{\link[=relaxMapOneStep]{relaxMapOneStep()}}
 }
 \concept{map optimization functions}

@@ -67,12 +67,12 @@ settings like \code{maxit} see the underlying optimizer documentation at
 \href{https://ensmallen.org/}{ensmallen.org}.
 }
 \seealso{
-Other map optimization functions: 
-\code{\link{make.acmap}()},
-\code{\link{moveTrappedPoints}()},
-\code{\link{optimizeMap}()},
-\code{\link{randomizeCoords}()},
-\code{\link{relaxMapOneStep}()},
-\code{\link{relaxMap}()}
+Other map optimization functions:
+\code{\link[=make.acmap]{make.acmap()}},
+\code{\link[=moveTrappedPoints]{moveTrappedPoints()}},
+\code{\link[=optimizeMap]{optimizeMap()}},
+\code{\link[=randomizeCoords]{randomizeCoords()}},
+\code{\link[=relaxMap]{relaxMap()}},
+\code{\link[=relaxMapOneStep]{relaxMapOneStep()}}
 }
 \concept{map optimization functions}

@@ -18,9 +18,9 @@ Returns the updated acmap object
 Keep only data from specified optimization runs.
 }
 \seealso{
-Other functions to work with map optimizations: 
+Other functions to work with map optimizations:
 \code{\link{optimizationProperties}},
-\code{\link{removeOptimizations}()},
-\code{\link{sortOptimizations}()}
+\code{\link[=removeOptimizations]{removeOptimizations()}},
+\code{\link[=sortOptimizations]{sortOptimizations()}}
 }
 \concept{functions to work with map optimizations}

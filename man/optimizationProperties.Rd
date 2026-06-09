@@ -21,9 +21,9 @@ Utility functions to get a vector of all the map optimization
 properties.
 }
 \seealso{
-Other functions to work with map optimizations: 
-\code{\link{keepOptimizations}()},
-\code{\link{removeOptimizations}()},
-\code{\link{sortOptimizations}()}
+Other functions to work with map optimizations:
+\code{\link[=keepOptimizations]{keepOptimizations()}},
+\code{\link[=removeOptimizations]{removeOptimizations()}},
+\code{\link[=sortOptimizations]{sortOptimizations()}}
 }
 \concept{functions to work with map optimizations}

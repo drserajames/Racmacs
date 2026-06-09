@@ -40,7 +40,12 @@ applied per antigen when using the "noisy" method}
 \item{titer_noise_sd}{The standard deviation (on the log titer scale) of measurement noise
 applied per titer when using the "noisy" method}
 
-\item{options}{Map optimizer options, see \code{RacOptimizer.options()}}
+\item{options}{Map optimizer options, see \code{RacOptimizer.options()}. The
+\code{num_cores} option controls parallelisation at two levels: when greater
+than 1, bootstrap repeats are distributed across cores using
+\code{\link[parallel:mclapply]{parallel::mclapply()}} (macOS/Linux only; Windows falls back to 1 core).
+Within each repeat, the C++ optimizer is run single-threaded to avoid
+fork/OpenMP conflicts.}
 }
 \value{
 Returns the map object updated with bootstrap information
@@ -96,27 +101,27 @@ noise you may expect in your data and set these parameters accordingly.
 }
 }
 \seealso{
-Other map diagnostic functions: 
-\code{\link{agCohesion}()},
-\code{\link{bootstrapBlobs}()},
-\code{\link{checkHemisphering}()},
-\code{\link{dimensionTestMap}()},
-\code{\link{logtiterTable}()},
+Other map diagnostic functions:
+\code{\link[=agCohesion]{agCohesion()}},
+\code{\link[=bootstrapBlobs]{bootstrapBlobs()}},
+\code{\link[=checkHemisphering]{checkHemisphering()}},
+\code{\link[=dimensionTestMap]{dimensionTestMap()}},
+\code{\link[=logtiterTable]{logtiterTable()}},
 \code{\link{map-table-distances}},
 \code{\link{mapBootstrapCoords}},
-\code{\link{mapDistances}()},
-\code{\link{mapRelaxed}()},
-\code{\link{mapResiduals}()},
+\code{\link[=mapDistances]{mapDistances()}},
+\code{\link[=mapRelaxed]{mapRelaxed()}},
+\code{\link[=mapResiduals]{mapResiduals()}},
 \code{\link{pointStress}},
 \code{\link{ptBootstrapBlob}},
-\code{\link{ptBootstrapCoords}()},
+\code{\link[=ptBootstrapCoords]{ptBootstrapCoords()}},
 \code{\link{ptLeverage}},
 \code{\link{ptTriangulationBlob}},
-\code{\link{recalculateStress}()},
-\code{\link{stressTable}()},
-\code{\link{tableColbases}()},
-\code{\link{tableDistances}()},
-\code{\link{triangulationBlobs}()},
+\code{\link[=recalculateStress]{recalculateStress()}},
+\code{\link[=stressTable]{stressTable()}},
+\code{\link[=tableColbases]{tableColbases()}},
+\code{\link[=tableDistances]{tableDistances()}},
+\code{\link[=triangulationBlobs]{triangulationBlobs()}},
 \code{\link{unstableMaps}}
 }
 \concept{map diagnostic functions}
