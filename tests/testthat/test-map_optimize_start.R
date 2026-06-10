@@ -535,7 +535,78 @@ test_that("'genetic' errors clearly when serum sequences are missing", {
 
 
 # ====================================================================
-# 11.  Generic r*() distribution support
+# 11.  Disk (n-ball) starting coordinates
+# ====================================================================
+test_that("optimizeMapStart runs with 'disk' starting coordinates", {
+
+  result <- optimizeMapStart(
+    map                    = perfect_map,
+    number_of_dimensions   = 2,
+    number_of_optimizations = n_runs,
+    starting_coords        = "disk",
+    fixed_column_bases     = colbases,
+    check_convergence      = FALSE,
+    verbose                = FALSE
+  )
+
+  expect_s3_class(result, "acmap")
+  expect_equal(numOptimizations(result), n_runs)
+  expect_true(all(is.finite(mapStress(result))))
+
+})
+
+
+test_that("'disk' respects the r coord_arg", {
+
+  result <- optimizeMapStart(
+    map                    = perfect_map,
+    number_of_dimensions   = 2,
+    number_of_optimizations = 3,
+    starting_coords        = "disk",
+    coord_args             = list(r = 2),
+    fixed_column_bases     = colbases,
+    check_convergence      = FALSE,
+    verbose                = FALSE
+  )
+
+  expect_s3_class(result, "acmap")
+  expect_equal(numOptimizations(result), 3)
+
+})
+
+
+test_that("'disk' works for 3D maps", {
+
+  # Build a small 3D test map
+  set.seed(7)
+  ag3 <- matrix(runif(9 * 3, -3, 3), 9, 3)
+  sr3 <- matrix(runif(9 * 3, -3, 3), 9, 3)
+  cb3 <- round(runif(9, 3, 6))
+  dm3 <- as.matrix(dist(rbind(ag3, sr3)))[seq_len(9), -seq_len(9)]
+  lt3 <- matrix(cb3, 9, 9, byrow = TRUE) - dm3
+  tt3 <- matrix(as.character(2^lt3 * 10), 9, 9)
+  map3d <- acmap(titer_table = tt3, ag_coords = ag3, sr_coords = sr3)
+
+  result <- optimizeMapStart(
+    map                    = map3d,
+    number_of_dimensions   = 3,
+    number_of_optimizations = 2,
+    starting_coords        = "disk",
+    coord_args             = list(r = 5),
+    fixed_column_bases     = cb3,
+    check_convergence      = FALSE,
+    verbose                = FALSE
+  )
+
+  expect_s3_class(result, "acmap")
+  expect_equal(numOptimizations(result), 2)
+  expect_equal(mapDimensions(result), 3)
+
+})
+
+
+# ====================================================================
+# 12.  Generic r*() distribution support
 # ====================================================================
 
 test_that("optimizeMapStart runs with 'cauchy' (via rcauchy)", {
