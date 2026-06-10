@@ -179,8 +179,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // ac_optimize_map
-AcMap ac_optimize_map(AcMap map, int num_dims, int num_optimizations, std::string min_col_basis, arma::vec fixed_col_bases, arma::vec ag_reactivity_adjustments, arma::mat titer_weights, AcOptimizerOptions options);
-RcppExport SEXP _Racmacs_ac_optimize_map(SEXP mapSEXP, SEXP num_dimsSEXP, SEXP num_optimizationsSEXP, SEXP min_col_basisSEXP, SEXP fixed_col_basesSEXP, SEXP ag_reactivity_adjustmentsSEXP, SEXP titer_weightsSEXP, SEXP optionsSEXP) {
+AcMap ac_optimize_map(AcMap map, int num_dims, int num_optimizations, std::string min_col_basis, arma::vec fixed_col_bases, arma::vec ag_reactivity_adjustments, arma::mat titer_weights, AcOptimizerOptions options, Rcpp::List starting_coords);
+RcppExport SEXP _Racmacs_ac_optimize_map(SEXP mapSEXP, SEXP num_dimsSEXP, SEXP num_optimizationsSEXP, SEXP min_col_basisSEXP, SEXP fixed_col_basesSEXP, SEXP ag_reactivity_adjustmentsSEXP, SEXP titer_weightsSEXP, SEXP optionsSEXP, SEXP starting_coordsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -192,7 +192,8 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< arma::vec >::type ag_reactivity_adjustments(ag_reactivity_adjustmentsSEXP);
     Rcpp::traits::input_parameter< arma::mat >::type titer_weights(titer_weightsSEXP);
     Rcpp::traits::input_parameter< AcOptimizerOptions >::type options(optionsSEXP);
-    rcpp_result_gen = Rcpp::wrap(ac_optimize_map(map, num_dims, num_optimizations, min_col_basis, fixed_col_bases, ag_reactivity_adjustments, titer_weights, options));
+    Rcpp::traits::input_parameter< Rcpp::List >::type starting_coords(starting_coordsSEXP);
+    rcpp_result_gen = Rcpp::wrap(ac_optimize_map(map, num_dims, num_optimizations, min_col_basis, fixed_col_bases, ag_reactivity_adjustments, titer_weights, options, starting_coords));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -1615,8 +1616,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // ac_runOptimizations
-std::vector<AcOptimization> ac_runOptimizations(const AcTiterTable& titertable, const std::string& minimum_col_basis, const arma::vec& fixed_colbases, const arma::vec& ag_reactivity_adjustments, const arma::uword& num_dims, const arma::uword& num_optimizations, const AcOptimizerOptions& options, const arma::mat& titer_weights, const double& dilution_stepsize);
-RcppExport SEXP _Racmacs_ac_runOptimizations(SEXP titertableSEXP, SEXP minimum_col_basisSEXP, SEXP fixed_colbasesSEXP, SEXP ag_reactivity_adjustmentsSEXP, SEXP num_dimsSEXP, SEXP num_optimizationsSEXP, SEXP optionsSEXP, SEXP titer_weightsSEXP, SEXP dilution_stepsizeSEXP) {
+std::vector<AcOptimization> ac_runOptimizations(const AcTiterTable& titertable, const std::string& minimum_col_basis, const arma::vec& fixed_colbases, const arma::vec& ag_reactivity_adjustments, const arma::uword& num_dims, const arma::uword& num_optimizations, const AcOptimizerOptions& options, const arma::mat& titer_weights, const double& dilution_stepsize, const Rcpp::List& starting_coords);
+RcppExport SEXP _Racmacs_ac_runOptimizations(SEXP titertableSEXP, SEXP minimum_col_basisSEXP, SEXP fixed_colbasesSEXP, SEXP ag_reactivity_adjustmentsSEXP, SEXP num_dimsSEXP, SEXP num_optimizationsSEXP, SEXP optionsSEXP, SEXP titer_weightsSEXP, SEXP dilution_stepsizeSEXP, SEXP starting_coordsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -1629,7 +1630,8 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const AcOptimizerOptions& >::type options(optionsSEXP);
     Rcpp::traits::input_parameter< const arma::mat& >::type titer_weights(titer_weightsSEXP);
     Rcpp::traits::input_parameter< const double& >::type dilution_stepsize(dilution_stepsizeSEXP);
-    rcpp_result_gen = Rcpp::wrap(ac_runOptimizations(titertable, minimum_col_basis, fixed_colbases, ag_reactivity_adjustments, num_dims, num_optimizations, options, titer_weights, dilution_stepsize));
+    Rcpp::traits::input_parameter< const Rcpp::List& >::type starting_coords(starting_coordsSEXP);
+    rcpp_result_gen = Rcpp::wrap(ac_runOptimizations(titertable, minimum_col_basis, fixed_colbases, ag_reactivity_adjustments, num_dims, num_optimizations, options, titer_weights, dilution_stepsize, starting_coords));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -1901,7 +1903,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_Racmacs_ac_numeric_table_distances", (DL_FUNC) &_Racmacs_ac_numeric_table_distances, 4},
     {"_Racmacs_ac_newOptimization", (DL_FUNC) &_Racmacs_ac_newOptimization, 3},
     {"_Racmacs_ac_relaxOptimization", (DL_FUNC) &_Racmacs_ac_relaxOptimization, 7},
-    {"_Racmacs_ac_optimize_map", (DL_FUNC) &_Racmacs_ac_optimize_map, 8},
+    {"_Racmacs_ac_optimize_map", (DL_FUNC) &_Racmacs_ac_optimize_map, 9},
     {"_Racmacs_ac_new_antigen", (DL_FUNC) &_Racmacs_ac_new_antigen, 1},
     {"_Racmacs_ac_ag_get_id", (DL_FUNC) &_Racmacs_ac_ag_get_id, 1},
     {"_Racmacs_ac_ag_get_date", (DL_FUNC) &_Racmacs_ac_ag_get_date, 1},
@@ -2029,7 +2031,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_Racmacs_ac_point_stresses", (DL_FUNC) &_Racmacs_ac_point_stresses, 6},
     {"_Racmacs_ac_point_residuals", (DL_FUNC) &_Racmacs_ac_point_residuals, 2},
     {"_Racmacs_ac_relax_coords", (DL_FUNC) &_Racmacs_ac_relax_coords, 9},
-    {"_Racmacs_ac_runOptimizations", (DL_FUNC) &_Racmacs_ac_runOptimizations, 9},
+    {"_Racmacs_ac_runOptimizations", (DL_FUNC) &_Racmacs_ac_runOptimizations, 10},
     {"_Racmacs_ac_reactivity_adjustment_stress", (DL_FUNC) &_Racmacs_ac_reactivity_adjustment_stress, 15},
     {"_Racmacs_ac_stress_blob_grid", (DL_FUNC) &_Racmacs_ac_stress_blob_grid, 7},
     {"_Racmacs_numeric_titers", (DL_FUNC) &_Racmacs_numeric_titers, 1},

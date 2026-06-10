@@ -13,6 +13,14 @@
 #' @param fixed_column_bases A vector of fixed values to use as column bases
 #'   directly, rather than calculating them from the titer table.
 #' @param titer_weights An optional matrix of weights to assign each titer when optimizing
+#' @param starting_coords An optional list of length `number_of_optimizations`
+#'   specifying custom starting coordinates for each run.  Each element must be
+#'   a named list with entries `ag_coords` (an n_antigens × n_dimensions
+#'   numeric matrix) and `sr_coords` (an n_sera × n_dimensions numeric matrix).
+#'   When `NULL` (the default) points are randomly positioned before each run,
+#'   replicating the standard Racmacs behaviour.  Note: `starting_coords` is
+#'   incompatible with `options = list(dim_annealing = TRUE)` — a warning is
+#'   issued and dimensional annealing is disabled when both are supplied.
 #' @param sort_optimizations Should optimizations be sorted by stress
 #'   afterwards?
 #' @param check_convergence Should a basic check for convergence of lowest stress
@@ -51,6 +59,7 @@ optimizeMap <- function(
   minimum_column_basis = "none",
   fixed_column_bases = NULL,
   titer_weights = NULL,
+  starting_coords = NULL,
   sort_optimizations = TRUE,
   check_convergence = TRUE,
   verbose  = TRUE,
@@ -61,6 +70,41 @@ optimizeMap <- function(
   if (is.null(fixed_column_bases)) fixed_column_bases <- rep(NA, numSera(map))
   if (is.null(titer_weights)) titer_weights <- matrix(1, numAntigens(map), numSera(map))
 
+  # Validate starting_coords
+  if (!is.null(starting_coords)) {
+    if (!is.list(starting_coords)) {
+      stop("`starting_coords` must be a list of length `number_of_optimizations` or NULL.",
+           call. = FALSE)
+    }
+    if (length(starting_coords) != number_of_optimizations) {
+      stop(sprintf(
+        "`starting_coords` has %d element(s) but `number_of_optimizations` is %d.",
+        length(starting_coords), number_of_optimizations
+      ), call. = FALSE)
+    }
+    for (i in seq_along(starting_coords)) {
+      sc <- starting_coords[[i]]
+      if (!is.list(sc) || !all(c("ag_coords", "sr_coords") %in% names(sc))) {
+        stop(sprintf(
+          "`starting_coords[[%d]]` must be a named list with elements 'ag_coords' and 'sr_coords'.",
+          i
+        ), call. = FALSE)
+      }
+      if (!is.matrix(sc$ag_coords) || !is.numeric(sc$ag_coords)) {
+        stop(sprintf("`starting_coords[[%d]]$ag_coords` must be a numeric matrix.", i), call. = FALSE)
+      }
+      if (!is.matrix(sc$sr_coords) || !is.numeric(sc$sr_coords)) {
+        stop(sprintf("`starting_coords[[%d]]$sr_coords` must be a numeric matrix.", i), call. = FALSE)
+      }
+      if (ncol(sc$ag_coords) != number_of_dimensions || ncol(sc$sr_coords) != number_of_dimensions) {
+        stop(sprintf(
+          "`starting_coords[[%d]]` coordinates must have %d column(s) (one per dimension).",
+          i, number_of_dimensions
+        ), call. = FALSE)
+      }
+    }
+  }
+
   # Warn about overwriting previous optimizations
   if (numOptimizations(map) > 0) {
     vmessage(verbose, "Discarding previous optimization runs.")
@@ -70,6 +114,18 @@ optimizeMap <- function(
   # Get optimizer options
   options <- do.call(RacOptimizer.options, options)
   if (!verbose) options$report_progress <- FALSE
+
+  # starting_coords and dim_annealing are incompatible: dim_annealing starts
+  # in 5D then reduces, but user-supplied coords already have a fixed number of
+  # dimensions.  Warn and disable dim_annealing in this case.
+  if (!is.null(starting_coords) && isTRUE(options$dim_annealing)) {
+    warning(
+      "`starting_coords` is incompatible with `dim_annealing = TRUE`; ",
+      "dimensional annealing has been disabled for this call.",
+      call. = FALSE
+    )
+    options$dim_annealing <- FALSE
+  }
 
   # Perform the optimization runs
   tstart <- Sys.time()
@@ -107,7 +163,8 @@ optimizeMap <- function(
     fixed_col_bases = fixed_column_bases,
     ag_reactivity_adjustments = agReactivityAdjustments(map),
     titer_weights = titer_weights,
-    options = options
+    options = options,
+    starting_coords = if (is.null(starting_coords)) list() else starting_coords
   )
 
   # Set disconnected point coordinates to NaN

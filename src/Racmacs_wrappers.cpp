@@ -185,7 +185,7 @@ AcOptimization ac_relaxOptimization(
 }
 
 
-// Relax an optimization
+// Optimize a map from random or user-supplied starting coordinates
 // [[Rcpp::export]]
 AcMap ac_optimize_map(
     AcMap map,
@@ -195,7 +195,8 @@ AcMap ac_optimize_map(
     arma::vec fixed_col_bases,
     arma::vec ag_reactivity_adjustments,
     arma::mat titer_weights,
-    AcOptimizerOptions options
+    AcOptimizerOptions options,
+    Rcpp::List starting_coords
 ){
 
   map.optimize(
@@ -205,7 +206,8 @@ AcMap ac_optimize_map(
     fixed_col_bases,
     ag_reactivity_adjustments,
     options,
-    titer_weights
+    titer_weights,
+    starting_coords
   );
 
   return map;

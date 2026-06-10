@@ -53,8 +53,8 @@ ac_relaxOptimization <- function(opt, titers, fixed_antigens, fixed_sera, option
     .Call('_Racmacs_ac_relaxOptimization', PACKAGE = 'Racmacs', opt, titers, fixed_antigens, fixed_sera, options, titer_weights, dilution_stepsize)
 }
 
-ac_optimize_map <- function(map, num_dims, num_optimizations, min_col_basis, fixed_col_bases, ag_reactivity_adjustments, titer_weights, options) {
-    .Call('_Racmacs_ac_optimize_map', PACKAGE = 'Racmacs', map, num_dims, num_optimizations, min_col_basis, fixed_col_bases, ag_reactivity_adjustments, titer_weights, options)
+ac_optimize_map <- function(map, num_dims, num_optimizations, min_col_basis, fixed_col_bases, ag_reactivity_adjustments, titer_weights, options, starting_coords) {
+    .Call('_Racmacs_ac_optimize_map', PACKAGE = 'Racmacs', map, num_dims, num_optimizations, min_col_basis, fixed_col_bases, ag_reactivity_adjustments, titer_weights, options, starting_coords)
 }
 
 ac_new_antigen <- function(name) {
@@ -565,8 +565,8 @@ ac_relax_coords <- function(tabledist_matrix, titertype_matrix, ag_coords, sr_co
     .Call('_Racmacs_ac_relax_coords', PACKAGE = 'Racmacs', tabledist_matrix, titertype_matrix, ag_coords, sr_coords, options, fixed_antigens, fixed_sera, titer_weights, dilution_stepsize)
 }
 
-ac_runOptimizations <- function(titertable, minimum_col_basis, fixed_colbases, ag_reactivity_adjustments, num_dims, num_optimizations, options, titer_weights, dilution_stepsize) {
-    .Call('_Racmacs_ac_runOptimizations', PACKAGE = 'Racmacs', titertable, minimum_col_basis, fixed_colbases, ag_reactivity_adjustments, num_dims, num_optimizations, options, titer_weights, dilution_stepsize)
+ac_runOptimizations <- function(titertable, minimum_col_basis, fixed_colbases, ag_reactivity_adjustments, num_dims, num_optimizations, options, titer_weights, dilution_stepsize, starting_coords) {
+    .Call('_Racmacs_ac_runOptimizations', PACKAGE = 'Racmacs', titertable, minimum_col_basis, fixed_colbases, ag_reactivity_adjustments, num_dims, num_optimizations, options, titer_weights, dilution_stepsize, starting_coords)
 }
 
 ac_reactivity_adjustment_stress <- function(par, fixed_ag_reactivities, minimum_column_basis, fixed_column_bases, titertable, ag_coords, sr_coords, options, fixed_antigens, fixed_sera, titer_weights, reactivity_stress_weighting, reoptimize, num_optimizations, dilution_stepsize) {
