@@ -29,37 +29,37 @@ For more information on column bases, what they mean and how they are
 calculated see \code{vignette("intro-to-antigenic-cartography")}
 }
 \seealso{
-Other map diagnostic functions: 
-\code{\link{agCohesion}()},
-\code{\link{bootstrapBlobs}()},
-\code{\link{bootstrapMap}()},
-\code{\link{checkHemisphering}()},
-\code{\link{dimensionTestMap}()},
-\code{\link{logtiterTable}()},
+Other map diagnostic functions:
+\code{\link[=agCohesion]{agCohesion()}},
+\code{\link[=bootstrapBlobs]{bootstrapBlobs()}},
+\code{\link[=bootstrapMap]{bootstrapMap()}},
+\code{\link[=checkHemisphering]{checkHemisphering()}},
+\code{\link[=dimensionTestMap]{dimensionTestMap()}},
+\code{\link[=logtiterTable]{logtiterTable()}},
 \code{\link{map-table-distances}},
 \code{\link{mapBootstrapCoords}},
-\code{\link{mapDistances}()},
-\code{\link{mapRelaxed}()},
-\code{\link{mapResiduals}()},
+\code{\link[=mapDistances]{mapDistances()}},
+\code{\link[=mapRelaxed]{mapRelaxed()}},
+\code{\link[=mapResiduals]{mapResiduals()}},
 \code{\link{pointStress}},
 \code{\link{ptBootstrapBlob}},
-\code{\link{ptBootstrapCoords}()},
+\code{\link[=ptBootstrapCoords]{ptBootstrapCoords()}},
 \code{\link{ptLeverage}},
 \code{\link{ptTriangulationBlob}},
-\code{\link{recalculateStress}()},
-\code{\link{stressTable}()},
-\code{\link{tableDistances}()},
-\code{\link{triangulationBlobs}()},
+\code{\link[=recalculateStress]{recalculateStress()}},
+\code{\link[=stressTable]{stressTable()}},
+\code{\link[=tableDistances]{tableDistances()}},
+\code{\link[=triangulationBlobs]{triangulationBlobs()}},
 \code{\link{unstableMaps}}
 
-Other functions relating to map stress calculation: 
-\code{\link{logtiterTable}()},
-\code{\link{mapDistances}()},
-\code{\link{mapResiduals}()},
+Other functions relating to map stress calculation:
+\code{\link[=logtiterTable]{logtiterTable()}},
+\code{\link[=mapDistances]{mapDistances()}},
+\code{\link[=mapResiduals]{mapResiduals()}},
 \code{\link{pointStress}},
-\code{\link{recalculateStress}()},
-\code{\link{stressTable}()},
-\code{\link{tableDistances}()}
+\code{\link[=recalculateStress]{recalculateStress()}},
+\code{\link[=stressTable]{stressTable()}},
+\code{\link[=tableDistances]{tableDistances()}}
 }
 \concept{functions relating to map stress calculation}
 \concept{map diagnostic functions}
