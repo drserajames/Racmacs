@@ -185,6 +185,42 @@ AcOptimization ac_relaxOptimization(
 }
 
 
+// Relax an optimization with dimensional annealing, reducing from the
+// optimization's current dimensions down to target_dimensions step by step,
+// performing a full L-BFGS relaxation at each intermediate dimension.
+// [[Rcpp::export]]
+AcOptimization ac_relaxOptimization_dimAnnealing(
+    AcOptimization opt,
+    AcTiterTable titers,
+    arma::uvec fixed_antigens,
+    arma::uvec fixed_sera,
+    AcOptimizerOptions options,
+    arma::mat titer_weights,
+    double dilution_stepsize,
+    int target_dimensions
+){
+
+  int start_dims = opt.dim();
+
+  for (int dims = start_dims; dims >= target_dimensions; dims--) {
+    opt.relax_from_titer_table(
+      titers,
+      options,
+      fixed_antigens,
+      fixed_sera,
+      titer_weights,
+      dilution_stepsize
+    );
+    if (dims > target_dimensions) {
+      opt.reduceDimensions(dims - 1);
+    }
+  }
+
+  return opt;
+
+}
+
+
 // Relax an optimization
 // [[Rcpp::export]]
 AcMap ac_optimize_map(
