@@ -44,7 +44,7 @@ Suggests:
     knitr,
     rmarkdown,
     rstudioapi,
-    plotly,
+    plotly (>= 4.10.4),
     geometry,
     readxl,
     stringr,
