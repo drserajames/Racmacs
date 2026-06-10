@@ -22,11 +22,8 @@
 #' @param titer_noise_sd The standard deviation (on the log titer scale) of measurement noise
 #'   applied per titer when using the "noisy" method
 #' @param options Map optimizer options, see `RacOptimizer.options()`. The
-#'   `num_cores` option controls parallelisation at two levels: when greater
-#'   than 1, bootstrap repeats are distributed across cores using
-#'   [parallel::mclapply()] (macOS/Linux only; Windows falls back to 1 core).
-#'   Within each repeat, the C++ optimizer is run single-threaded to avoid
-#'   fork/OpenMP conflicts.
+#'   `num_cores` option controls the number of parallel cores used when running
+#'   bootstrap repeats.
 #'
 #' @details ## Bootstrapping methods
 #'
@@ -100,50 +97,31 @@ bootstrapMap <- function(
 
   # Set options
   options <- do.call(RacOptimizer.options, options)
-  options$report_progress <- FALSE
-  num_cores <- options$num_cores
 
-  # When parallelising across repeats via mclapply (fork-based), restrict C++
-  # OpenMP to 1 thread per worker to avoid fork-after-thread undefined behaviour.
-  if (num_cores > 1) options$num_cores <- 1L
+  # Run bootstrap repeats in parallel via C++ OpenMP
+  bs_results <- ac_runBootstrap(
+    map                       = keepSingleOptimization(map),
+    method                    = method,
+    bootstrap_ags             = bootstrap_ags,
+    bootstrap_sr              = bootstrap_sr,
+    reoptimize                = reoptimize,
+    ag_noise_sd               = ag_noise_sd,
+    titer_noise_sd            = titer_noise_sd,
+    minimum_column_basis      = minColBasis(map),
+    fixed_column_bases        = fixedColBases(map),
+    ag_reactivity_adjustments = agReactivityAdjustments(map),
+    num_optimizations         = optimizations_per_repeat,
+    num_dimensions            = mapDimensions(map),
+    num_bootstrap_repeats     = bootstrap_repeats,
+    options                   = options
+  )
 
-  # Closure over all repeat-invariant values
-  run_repeat <- function(x) {
-    bs_result <- ac_bootstrap_map(
-      map                       = keepSingleOptimization(map),
-      method                    = method,
-      bootstrap_ags             = bootstrap_ags,
-      bootstrap_sr              = bootstrap_sr,
-      reoptimize                = reoptimize,
-      ag_noise_sd               = ag_noise_sd,
-      titer_noise_sd            = titer_noise_sd,
-      minimum_column_basis      = minColBasis(map),
-      fixed_column_bases        = fixedColBases(map),
-      ag_reactivity_adjustments = agReactivityAdjustments(map),
-      num_optimizations         = optimizations_per_repeat,
-      num_dimensions            = mapDimensions(map),
-      options                   = options
-    )
-    bs_result$coords <- ac_align_coords(bs_result$coords, ptBaseCoords(map))
+  # Align results to the main map coordinates
+  base_coords <- ptBaseCoords(map)
+  map$optimizations[[1]]$bootstrap <- lapply(bs_results, function(bs_result) {
+    bs_result$coords <- ac_align_coords(bs_result$coords, base_coords)
     bs_result
-  }
-
-  message("Running bootstrap repeats")
-
-  if (num_cores > 1) {
-    map$optimizations[[1]]$bootstrap <- parallel::mclapply(
-      seq_len(bootstrap_repeats),
-      run_repeat,
-      mc.cores = num_cores
-    )
-  } else {
-    pb <- ac_progress_bar(bootstrap_repeats)
-    map$optimizations[[1]]$bootstrap <- lapply(seq_len(bootstrap_repeats), function(x) {
-      result <- run_repeat(x)
-      ac_update_progress(pb, x)
-      result
-    })
-  }
+  })
 
   # Return the map
   map

@@ -1,9 +1,16 @@
 
+// [[Rcpp::plugins(openmp)]]
+
+#ifdef _OPENMP
+  #include <omp.h>
+#endif
+
 #include "acmap_map.h"
 #include "acmap_titers.h"
 #include "ac_optim_map_stress.h"
 #include "ac_bootstrap.h"
 #include "ac_optimizer_options.h"
+#include "utils_error.h"
 
 // Function for sampling from a dirichilet
 arma::vec rdirichilet(
@@ -176,4 +183,76 @@ BootstrapOutput ac_bootstrap_map(
 }
 
 
+// [[Rcpp::export]]
+Rcpp::List ac_runBootstrap(
+    const AcMap map,
+    std::string method,
+    bool bootstrap_ags,
+    bool bootstrap_sr,
+    bool reoptimize,
+    double ag_noise_sd,
+    double titer_noise_sd,
+    std::string minimum_column_basis,
+    arma::vec fixed_column_bases,
+    arma::vec ag_reactivity_adjustments,
+    int num_optimizations,
+    int num_dimensions,
+    int num_bootstrap_repeats,
+    AcOptimizerOptions options
+){
+
+  // Collect results as C++ structs (safe to fill in parallel).
+  std::vector<BootstrapOutput> results(num_bootstrap_repeats);
+
+  // RcppProgress 0.4.2 uses a global static singleton for Progress objects.
+  // ac_bootstrap_map() → ac_runOptimizations() → ac_relaxOptimizations() also
+  // creates a Progress object internally, which would delete and replace any
+  // outer Progress singleton we create here, causing a null-pointer crash
+  // (_abort at offset 0x18) on the next p.check_abort() call.
+  //
+  // Solution: do not use Progress in this function.  Instead we print a dot
+  // per repeat (guarded by an OpenMP critical section so the output is
+  // coherent) and let the inner functions show their own progress when
+  // running serially.
+  if(options.report_progress) REprintf("Performing %d bootstrap repeats\n", num_bootstrap_repeats);
+
+  // Worker options: silence inner progress bars and disable nested
+  // parallelism so each repeat runs single-threaded.
+  // Armadillo 12.6+ has thread-local RNG so arma::randn/randi/randg are safe
+  // to call from parallel threads without further isolation.
+  AcOptimizerOptions worker_options = options;
+  worker_options.report_progress = false;
+  worker_options.num_cores = 1;
+
+  #pragma omp parallel for schedule(dynamic) num_threads(options.num_cores)
+  for (int i = 0; i < num_bootstrap_repeats; i++) {
+    results.at(i) = ac_bootstrap_map(
+      map, method, bootstrap_ags, bootstrap_sr, reoptimize,
+      ag_noise_sd, titer_noise_sd, minimum_column_basis,
+      fixed_column_bases, ag_reactivity_adjustments,
+      num_optimizations, num_dimensions, worker_options
+    );
+    if (options.report_progress) {
+      #ifdef _OPENMP
+      #pragma omp critical
+      #endif
+      { REprintf("."); }
+    }
+  }
+
+  if (options.report_progress) REprintf("\nBootstrap runs complete\n");
+
+  // Build return list on the main thread — avoids Rcpp auto-wrapping
+  // std::vector<BootstrapOutput> which has no Rcpp type registration.
+  Rcpp::List out(num_bootstrap_repeats);
+  for (int i = 0; i < num_bootstrap_repeats; i++) {
+    out[i] = Rcpp::List::create(
+      Rcpp::_["sampling"] = results.at(i).sampling,
+      Rcpp::_["coords"]   = results.at(i).coords,
+      Rcpp::_["stress"]   = results.at(i).stress
+    );
+  }
+  return out;
+
+}
 

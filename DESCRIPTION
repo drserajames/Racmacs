@@ -20,7 +20,6 @@ Description: A toolkit for making antigenic maps from immunological assay data,
 Depends: R (>= 4.0)
 Imports:
     Rcpp,
-    parallel,
     jsonlite,
     ks,
     brotli,

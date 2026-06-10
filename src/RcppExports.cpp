@@ -1322,6 +1322,30 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// ac_runBootstrap
+Rcpp::List ac_runBootstrap(const AcMap map, std::string method, bool bootstrap_ags, bool bootstrap_sr, bool reoptimize, double ag_noise_sd, double titer_noise_sd, std::string minimum_column_basis, arma::vec fixed_column_bases, arma::vec ag_reactivity_adjustments, int num_optimizations, int num_dimensions, int num_bootstrap_repeats, AcOptimizerOptions options);
+RcppExport SEXP _Racmacs_ac_runBootstrap(SEXP mapSEXP, SEXP methodSEXP, SEXP bootstrap_agsSEXP, SEXP bootstrap_srSEXP, SEXP reoptimizeSEXP, SEXP ag_noise_sdSEXP, SEXP titer_noise_sdSEXP, SEXP minimum_column_basisSEXP, SEXP fixed_column_basesSEXP, SEXP ag_reactivity_adjustmentsSEXP, SEXP num_optimizationsSEXP, SEXP num_dimensionsSEXP, SEXP num_bootstrap_repeatsSEXP, SEXP optionsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const AcMap >::type map(mapSEXP);
+    Rcpp::traits::input_parameter< std::string >::type method(methodSEXP);
+    Rcpp::traits::input_parameter< bool >::type bootstrap_ags(bootstrap_agsSEXP);
+    Rcpp::traits::input_parameter< bool >::type bootstrap_sr(bootstrap_srSEXP);
+    Rcpp::traits::input_parameter< bool >::type reoptimize(reoptimizeSEXP);
+    Rcpp::traits::input_parameter< double >::type ag_noise_sd(ag_noise_sdSEXP);
+    Rcpp::traits::input_parameter< double >::type titer_noise_sd(titer_noise_sdSEXP);
+    Rcpp::traits::input_parameter< std::string >::type minimum_column_basis(minimum_column_basisSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type fixed_column_bases(fixed_column_basesSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type ag_reactivity_adjustments(ag_reactivity_adjustmentsSEXP);
+    Rcpp::traits::input_parameter< int >::type num_optimizations(num_optimizationsSEXP);
+    Rcpp::traits::input_parameter< int >::type num_dimensions(num_dimensionsSEXP);
+    Rcpp::traits::input_parameter< int >::type num_bootstrap_repeats(num_bootstrap_repeatsSEXP);
+    Rcpp::traits::input_parameter< AcOptimizerOptions >::type options(optionsSEXP);
+    rcpp_result_gen = Rcpp::wrap(ac_runBootstrap(map, method, bootstrap_ags, bootstrap_sr, reoptimize, ag_noise_sd, titer_noise_sd, minimum_column_basis, fixed_column_bases, ag_reactivity_adjustments, num_optimizations, num_dimensions, num_bootstrap_repeats, options));
+    return rcpp_result_gen;
+END_RCPP
+}
 // ac_dimension_test_map
 DimTestOutput ac_dimension_test_map(AcTiterTable titer_table, arma::uvec dimensions_to_test, double test_proportion, std::string minimum_column_basis, arma::vec fixed_column_bases, arma::vec ag_reactivity_adjustments, int num_optimizations, AcOptimizerOptions options);
 RcppExport SEXP _Racmacs_ac_dimension_test_map(SEXP titer_tableSEXP, SEXP dimensions_to_testSEXP, SEXP test_proportionSEXP, SEXP minimum_column_basisSEXP, SEXP fixed_column_basesSEXP, SEXP ag_reactivity_adjustmentsSEXP, SEXP num_optimizationsSEXP, SEXP optionsSEXP) {
@@ -2008,6 +2032,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_Racmacs_ac_sr_set_group", (DL_FUNC) &_Racmacs_ac_sr_set_group, 2},
     {"_Racmacs_ac_sr_set_group_levels", (DL_FUNC) &_Racmacs_ac_sr_set_group_levels, 2},
     {"_Racmacs_ac_bootstrap_map", (DL_FUNC) &_Racmacs_ac_bootstrap_map, 13},
+    {"_Racmacs_ac_runBootstrap", (DL_FUNC) &_Racmacs_ac_runBootstrap, 14},
     {"_Racmacs_ac_dimension_test_map", (DL_FUNC) &_Racmacs_ac_dimension_test_map, 8},
     {"_Racmacs_ac_errorline_data", (DL_FUNC) &_Racmacs_ac_errorline_data, 1},
     {"_Racmacs_ac_hemi_test", (DL_FUNC) &_Racmacs_ac_hemi_test, 6},

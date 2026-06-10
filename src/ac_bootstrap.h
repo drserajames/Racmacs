@@ -24,4 +24,21 @@ BootstrapOutput ac_bootstrap_map(
     AcOptimizerOptions options
 );
 
+Rcpp::List ac_runBootstrap(
+    const AcMap map,
+    std::string method,
+    bool bootstrap_ags,
+    bool bootstrap_sr,
+    bool reoptimize,
+    double ag_noise_sd,
+    double titer_noise_sd,
+    std::string minimum_column_basis,
+    arma::vec fixed_column_bases,
+    arma::vec ag_reactivity_adjustments,
+    int num_optimizations,
+    int num_dimensions,
+    int num_bootstrap_repeats,
+    AcOptimizerOptions options
+);
+
 #endif

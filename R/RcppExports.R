@@ -481,6 +481,10 @@ ac_bootstrap_map <- function(map, method, bootstrap_ags, bootstrap_sr, reoptimiz
     .Call('_Racmacs_ac_bootstrap_map', PACKAGE = 'Racmacs', map, method, bootstrap_ags, bootstrap_sr, reoptimize, ag_noise_sd, titer_noise_sd, minimum_column_basis, fixed_column_bases, ag_reactivity_adjustments, num_optimizations, num_dimensions, options)
 }
 
+ac_runBootstrap <- function(map, method, bootstrap_ags, bootstrap_sr, reoptimize, ag_noise_sd, titer_noise_sd, minimum_column_basis, fixed_column_bases, ag_reactivity_adjustments, num_optimizations, num_dimensions, num_bootstrap_repeats, options) {
+    .Call('_Racmacs_ac_runBootstrap', PACKAGE = 'Racmacs', map, method, bootstrap_ags, bootstrap_sr, reoptimize, ag_noise_sd, titer_noise_sd, minimum_column_basis, fixed_column_bases, ag_reactivity_adjustments, num_optimizations, num_dimensions, num_bootstrap_repeats, options)
+}
+
 ac_dimension_test_map <- function(titer_table, dimensions_to_test, test_proportion, minimum_column_basis, fixed_column_bases, ag_reactivity_adjustments, num_optimizations, options) {
     .Call('_Racmacs_ac_dimension_test_map', PACKAGE = 'Racmacs', titer_table, dimensions_to_test, test_proportion, minimum_column_basis, fixed_column_bases, ag_reactivity_adjustments, num_optimizations, options)
 }

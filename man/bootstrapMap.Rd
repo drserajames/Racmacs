@@ -41,11 +41,8 @@ applied per antigen when using the "noisy" method}
 applied per titer when using the "noisy" method}
 
 \item{options}{Map optimizer options, see \code{RacOptimizer.options()}. The
-\code{num_cores} option controls parallelisation at two levels: when greater
-than 1, bootstrap repeats are distributed across cores using
-\code{\link[parallel:mclapply]{parallel::mclapply()}} (macOS/Linux only; Windows falls back to 1 core).
-Within each repeat, the C++ optimizer is run single-threaded to avoid
-fork/OpenMP conflicts.}
+\code{num_cores} option controls the number of parallel cores used when running
+bootstrap repeats.}
 }
 \value{
 Returns the map object updated with bootstrap information
