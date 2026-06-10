@@ -292,12 +292,12 @@ make.acmap <- function(
 #' `sr_coords` can be supplied directly:
 #'
 #' ```r
-#' optimizeMapCustomStart(
+#' optimizeMapStart(
 #'   map, 2, 100,
 #'   starting_coords = start_lhs   # Latin Hypercube
 #' )
 #'
-#' optimizeMapCustomStart(
+#' optimizeMapStart(
 #'   map, 2, 100,
 #'   starting_coords = start_cmds_perturbed,
 #'   coord_args = list(noise_sd = 1.5)
@@ -319,7 +319,7 @@ make.acmap <- function(
 #' @family map optimization functions
 #' @export
 #'
-optimizeMapCustomStart <- function(
+optimizeMapStart <- function(
   map,
   number_of_dimensions,
   number_of_optimizations,
