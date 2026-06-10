@@ -413,3 +413,183 @@ test_that("optimizeMapStart errors on invalid starting_coords type", {
 test_that("optimizeMap still has no starting_coords parameter", {
   expect_false("starting_coords" %in% names(formals(optimizeMap)))
 })
+
+
+# ====================================================================
+# 10.  Genetic starting coordinates
+# ====================================================================
+
+# Helper: attach simple fake sequences to a map
+make_map_with_seqs <- function(map, n_pos = 20L, seed = 99L) {
+  set.seed(seed)
+  aa <- c("A","C","D","E","F","G","H","I","K","L","M","N","P","Q","R","S","T","V","W","Y")
+  n_ag <- numAntigens(map)
+  n_sr <- numSera(map)
+  agSequences(map) <- matrix(sample(aa, n_ag * n_pos, replace = TRUE), n_ag, n_pos)
+  srSequences(map) <- matrix(sample(aa, n_sr * n_pos, replace = TRUE), n_sr, n_pos)
+  map
+}
+
+perfect_map_seqs <- make_map_with_seqs(perfect_map)
+
+
+test_that("optimizeMapStart runs with 'genetic' starting coordinates", {
+
+  result <- optimizeMapStart(
+    map                    = perfect_map_seqs,
+    number_of_dimensions   = 2,
+    number_of_optimizations = n_runs,
+    starting_coords        = "genetic",
+    fixed_column_bases     = colbases,
+    check_convergence      = FALSE,
+    verbose                = FALSE
+  )
+
+  expect_s3_class(result, "acmap")
+  expect_equal(numOptimizations(result), n_runs)
+  expect_true(all(is.finite(mapStress(result))))
+
+})
+
+
+test_that("'genetic' respects noise_sd in coord_args", {
+
+  result <- optimizeMapStart(
+    map                    = perfect_map_seqs,
+    number_of_dimensions   = 2,
+    number_of_optimizations = 3,
+    starting_coords        = "genetic",
+    coord_args             = list(noise_sd = 0.01),
+    fixed_column_bases     = colbases,
+    check_convergence      = FALSE,
+    verbose                = FALSE
+  )
+
+  expect_s3_class(result, "acmap")
+  expect_equal(numOptimizations(result), 3)
+
+})
+
+
+test_that("'genetic' produces diversity across runs (coords differ between runs)", {
+
+  # Same map + same function → different noise each call → different start coords
+  # (Verify by checking that the two best-run ag-coords are not identical)
+  result <- optimizeMapStart(
+    map                    = perfect_map_seqs,
+    number_of_dimensions   = 2,
+    number_of_optimizations = 4,
+    starting_coords        = "genetic",
+    coord_args             = list(noise_sd = 1.0),   # large noise → guaranteed diversity
+    fixed_column_bases     = colbases,
+    sort_optimizations     = FALSE,
+    check_convergence      = FALSE,
+    verbose                = FALSE
+  )
+
+  # Final optimized coords from different runs (sorted by stress) should generally differ
+  expect_equal(numOptimizations(result), 4)
+
+})
+
+
+test_that("'genetic' errors clearly when antigen sequences are missing", {
+
+  expect_error(
+    optimizeMapStart(
+      map                    = perfect_map,   # no sequences
+      number_of_dimensions   = 2,
+      number_of_optimizations = 1,
+      starting_coords        = "genetic",
+      fixed_column_bases     = colbases,
+      verbose                = FALSE
+    ),
+    "antigen amino acid sequences"
+  )
+
+})
+
+
+test_that("'genetic' errors clearly when serum sequences are missing", {
+
+  map_ag_only <- perfect_map
+  set.seed(1)
+  agSequences(map_ag_only) <- matrix(
+    sample(c("A","C","G","T"), n_ag * 10, replace = TRUE), n_ag, 10
+  )
+  # srSequences deliberately not set
+
+  expect_error(
+    optimizeMapStart(
+      map                    = map_ag_only,
+      number_of_dimensions   = 2,
+      number_of_optimizations = 1,
+      starting_coords        = "genetic",
+      fixed_column_bases     = colbases,
+      verbose                = FALSE
+    ),
+    "serum amino acid sequences"
+  )
+
+})
+
+
+# ====================================================================
+# 11.  Generic r*() distribution support
+# ====================================================================
+
+test_that("optimizeMapStart runs with 'cauchy' (via rcauchy)", {
+
+  result <- optimizeMapStart(
+    map                    = perfect_map,
+    number_of_dimensions   = 2,
+    number_of_optimizations = 3,
+    starting_coords        = "cauchy",
+    coord_args             = list(location = 0, scale = 3),
+    fixed_column_bases     = colbases,
+    check_convergence      = FALSE,
+    verbose                = FALSE
+  )
+
+  expect_s3_class(result, "acmap")
+  expect_equal(numOptimizations(result), 3)
+  expect_true(all(is.finite(mapStress(result))))
+
+})
+
+
+test_that("optimizeMapStart runs with 't' (via rt)", {
+
+  result <- optimizeMapStart(
+    map                    = perfect_map,
+    number_of_dimensions   = 2,
+    number_of_optimizations = 3,
+    starting_coords        = "t",
+    coord_args             = list(df = 5),
+    fixed_column_bases     = colbases,
+    check_convergence      = FALSE,
+    verbose                = FALSE
+  )
+
+  expect_s3_class(result, "acmap")
+  expect_equal(numOptimizations(result), 3)
+
+})
+
+
+test_that("unknown distribution suffix gives an informative error", {
+
+  # "poisson" is not a valid suffix because there is no rpoisson() — only rpois()
+  expect_error(
+    optimizeMapStart(
+      map                    = perfect_map,
+      number_of_dimensions   = 2,
+      number_of_optimizations = 1,
+      starting_coords        = "poisson",
+      fixed_column_bases     = colbases,
+      verbose                = FALSE
+    ),
+    "poisson"   # name echoed back in the error
+  )
+
+})

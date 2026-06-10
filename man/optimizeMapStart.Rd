@@ -39,8 +39,11 @@ Each element must be a named list with entries
 It is called once per optimisation run with the numeric table-distance
 matrix \code{D} (NAs for missing titers) and any additional arguments
 supplied via \code{coord_args}.}
-\item{\strong{Character string}}{Name of a built-in distribution — see
-Details.  Parameters are passed via \code{coord_args}.}
+\item{\strong{Character string}}{A built-in name (\code{"uniform"}, \code{"normal"}, or
+\code{"genetic"}) — see Details — or the suffix of any standard R
+distribution whose random generator follows the \verb{r<name>()} naming
+convention (e.g. \code{"t"} for \code{rt()}, \code{"cauchy"} for \code{rcauchy()},
+\code{"exp"} for \code{rexp()}).  Parameters are passed via \code{coord_args}.}
 }}
 
 \item{coord_args}{A named list of additional arguments forwarded to the
@@ -76,18 +79,45 @@ coordinates, a generating function, or one of several built-in
 distributions.
 }
 \details{
-\subsection{Built-in distributions}{
+\subsection{Built-in named options}{
 
 \describe{
 \item{\code{"uniform"}}{Uniform random draw from
 \eqn{[\mathit{lo},\, \mathit{hi}]^{\mathrm{ndim}}}.
-\code{coord_args} may contain \code{min} and \code{max} (defaults:
-\verb{±max_table_dist}).  This is equivalent to the standard Racmacs
-starting-coordinate behaviour, exposed here for reference.}
+\code{coord_args} may contain \code{min} and \code{max} (defaults: \verb{±max_table_dist}).
+Replicates the standard Racmacs random initialisation.}
 \item{\code{"normal"}}{Isotropic Gaussian centred at the origin.
 \code{coord_args} may contain \code{mean} (default 0) and \code{sd}
 (default \code{max_table_dist / 2}).}
+\item{\code{"genetic"}}{Classical MDS applied to the pairwise Hamming distances
+of all antigen and serum amino acid sequences stored in the map
+(via \code{\link[=agSequences]{agSequences()}} and \code{\link[=srSequences]{srSequences()}}).  The MDS coordinates are
+scaled so that their RMS spread matches the RMS table distance, then
+small isotropic Gaussian noise is added per run to create diversity.
+\code{coord_args} may contain \code{noise_sd} (default \code{max_table_dist * 0.05}).
+Sequences must be set on the map before calling this function.}
 }
+}
+
+\subsection{Any standard R distribution}{
+
+For any distribution with an \verb{r<name>()} function in the search path, pass
+the suffix as the string.  All \code{coord_args} entries are forwarded as named
+arguments.  No data-informed scale defaults are applied — choose parameters
+appropriate for your map's antigenic unit scale.
+
+\if{html}{\out{<div class="sourceCode r">}}\preformatted{# Student-t (heavier tails than normal)
+optimizeMapStart(map, 2, 100, starting_coords = "t",
+                 coord_args = list(df = 5))
+
+# Cauchy (very heavy tails)
+optimizeMapStart(map, 2, 100, starting_coords = "cauchy",
+                 coord_args = list(location = 0, scale = 3))
+
+# Exponential (one-sided; may be useful with centring)
+optimizeMapStart(map, 2, 100, starting_coords = "exp",
+                 coord_args = list(rate = 0.2))
+}\if{html}{\out{</div>}}
 }
 
 \subsection{Using custom functions}{
