@@ -30,12 +30,13 @@ Returns an updated map object
 Relax a map one step in the optimiser
 }
 \seealso{
-Other map optimization functions: 
-\code{\link{RacOptimizer.options}()},
-\code{\link{make.acmap}()},
-\code{\link{moveTrappedPoints}()},
-\code{\link{optimizeMap}()},
-\code{\link{randomizeCoords}()},
-\code{\link{relaxMap}()}
+Other map optimization functions:
+\code{\link[=RacOptimizer.options]{RacOptimizer.options()}},
+\code{\link[=make.acmap]{make.acmap()}},
+\code{\link[=moveTrappedPoints]{moveTrappedPoints()}},
+\code{\link[=optimizeMap]{optimizeMap()}},
+\code{\link[=optimizeMapStart]{optimizeMapStart()}},
+\code{\link[=randomizeCoords]{randomizeCoords()}},
+\code{\link[=relaxMap]{relaxMap()}}
 }
 \concept{map optimization functions}

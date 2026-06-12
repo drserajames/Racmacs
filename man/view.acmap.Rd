@@ -53,20 +53,20 @@ Returns an htmlwidget object
 View a racmap object in the interactive viewer.
 }
 \seealso{
-Other functions to view maps: 
-\code{\link{RacViewer.options}()},
-\code{\link{RacViewer}()},
-\code{\link{export_viewer}()},
-\code{\link{ggplot.acmap}()},
-\code{\link{mapGadget}()},
-\code{\link{plot.acmap}()},
-\code{\link{setLegend}()},
-\code{\link{view.default}()},
-\code{\link{view}()}
+Other functions to view maps:
+\code{\link[=RacViewer]{RacViewer()}},
+\code{\link[=RacViewer.options]{RacViewer.options()}},
+\code{\link[=export_viewer]{export_viewer()}},
+\code{\link[=ggplot.acmap]{ggplot.acmap()}},
+\code{\link[=mapGadget]{mapGadget()}},
+\code{\link[=plot.acmap]{plot.acmap()}},
+\code{\link[=setLegend]{setLegend()}},
+\code{\link[=view]{view()}},
+\code{\link[=view.default]{view.default()}}
 
-Other shiny app functions: 
+Other shiny app functions:
 \code{\link{RacViewer-shiny}},
-\code{\link{runGUI}()}
+\code{\link[=runGUI]{runGUI()}}
 }
 \concept{functions to view maps}
 \concept{shiny app functions}

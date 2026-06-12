@@ -477,8 +477,14 @@ double ac_relax_coords(
 }
 
 
-// Generate a bunch of optimizations with randomized coordinates
-// this is a starting point for later relaxation
+// Generate a bunch of optimizations, either with randomized coordinates
+// (default/current behaviour) or from user-supplied starting coordinates.
+//
+// starting_coords — an empty Rcpp::List means "randomise" (current default).
+//   If non-empty it must have num_optimizations elements, each a named List
+//   with entries "ag_coords" (n_ag × num_dims matrix) and "sr_coords"
+//   (n_sr × num_dims matrix).  When coordinates are supplied the rough
+//   initial relaxation used to estimate boxsize is skipped.
 std::vector<AcOptimization> ac_generateOptimizations(
     const arma::mat &tabledist_matrix,
     const arma::imat &titertype_matrix,
@@ -488,42 +494,48 @@ std::vector<AcOptimization> ac_generateOptimizations(
     const int &num_dims,
     const int &num_optimizations,
     const AcOptimizerOptions &options,
-    const double &dilution_stepsize
+    const double &dilution_stepsize,
+    const Rcpp::List &starting_coords
 ){
 
   // Infer number of antigens and sera
   int num_ags = tabledist_matrix.n_rows;
   int num_sr = tabledist_matrix.n_cols;
 
-  // First run a rough optimization using max table dist as the box size
-  AcOptimization initial_optim = AcOptimization(
-    num_dims,
-    num_ags,
-    num_sr,
-    min_colbasis,
-    fixed_colbases,
-    ag_reactivity_adjustments
-  );
+  // Determine coordinate box size — only needed for random initialisation.
+  // When user-supplied coords are provided we skip the rough initial run.
+  double coord_boxsize = 0.0;
+  if (starting_coords.size() == 0) {
 
-  initial_optim.randomizeCoords( tabledist_matrix.max() );
-  initial_optim.relax_from_raw_matrices(
-    tabledist_matrix,
-    titertype_matrix,
-    options,
-    arma::uvec(),
-    arma::uvec(),
-    arma::mat(),
-    dilution_stepsize
-  );
+    // Run a rough optimisation to estimate the spread of coordinates
+    AcOptimization initial_optim = AcOptimization(
+      num_dims,
+      num_ags,
+      num_sr,
+      min_colbasis,
+      fixed_colbases,
+      ag_reactivity_adjustments
+    );
 
-  // Set boxsize based on initial optimization result
-  arma::mat distmat = initial_optim.distance_matrix();
-  double coord_maxdist = distmat.max();
-  double coord_boxsize = coord_maxdist*2;
+    initial_optim.randomizeCoords( tabledist_matrix.max() );
+    initial_optim.relax_from_raw_matrices(
+      tabledist_matrix,
+      titertype_matrix,
+      options,
+      arma::uvec(),
+      arma::uvec(),
+      arma::mat(),
+      dilution_stepsize
+    );
 
-  // Create starting optimizations with random coordinates
+    arma::mat distmat = initial_optim.distance_matrix();
+    coord_boxsize = distmat.max() * 2;
+
+  }
+
+  // Create starting optimizations
   std::vector<AcOptimization> optimizations;
-  for(int i=0; i<num_optimizations; i++){
+  for (int i = 0; i < num_optimizations; i++) {
 
     AcOptimization optimization(
         num_dims,
@@ -534,12 +546,21 @@ std::vector<AcOptimization> ac_generateOptimizations(
         ag_reactivity_adjustments
     );
 
-    optimization.randomizeCoords(coord_boxsize);
+    if (starting_coords.size() == 0) {
+      // Default: randomise within estimated box
+      optimization.randomizeCoords(coord_boxsize);
+    } else {
+      // User-supplied starting coordinates for run i
+      Rcpp::List sc_i = Rcpp::as<Rcpp::List>(starting_coords[i]);
+      optimization.set_ag_base_coords(Rcpp::as<arma::mat>(sc_i["ag_coords"]));
+      optimization.set_sr_base_coords(Rcpp::as<arma::mat>(sc_i["sr_coords"]));
+    }
+
     optimizations.push_back(optimization);
 
   }
 
-  // Return the randomized optimizations
+  // Return the starting optimizations
   return optimizations;
 
 }
@@ -625,7 +646,8 @@ std::vector<AcOptimization> ac_runOptimizations(
     const arma::uword &num_optimizations,
     const AcOptimizerOptions &options,
     const arma::mat &titer_weights,
-    const double &dilution_stepsize
+    const double &dilution_stepsize,
+    const Rcpp::List &starting_coords
 ){
 
   // Get table distance matrix and titer type matrix
@@ -636,15 +658,17 @@ std::vector<AcOptimization> ac_runOptimizations(
   );
   arma::imat titertype_matrix = titertable.get_titer_types();
 
-  // Determine the number of dimensions in which to initially randomise
+  // Determine the number of dimensions in which to initially randomise.
+  // Dimensional annealing starts in 5D and reduces — this is only meaningful
+  // with random starts; when starting_coords are supplied, use num_dims directly.
   arma::uword start_dims;
-  if (options.dim_annealing && num_dims < 5) {
+  if (options.dim_annealing && num_dims < 5 && starting_coords.size() == 0) {
     start_dims = 5;
   } else {
     start_dims = num_dims;
   }
 
-  // Generate optimizations with random starting coords
+  // Generate starting optimizations (random or user-supplied)
   std::vector<AcOptimization> optimizations = ac_generateOptimizations(
     tabledist_matrix,
     titertype_matrix,
@@ -654,7 +678,8 @@ std::vector<AcOptimization> ac_runOptimizations(
     start_dims,
     num_optimizations,
     options,
-    dilution_stepsize
+    dilution_stepsize,
+    starting_coords
   );
 
   // Relax the optimizations

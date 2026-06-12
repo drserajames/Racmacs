@@ -3,11 +3,12 @@ Type: Package
 Title: Antigenic Cartography Macros
 Version: 1.2.9
 Date: 2023-11-30
-Authors@R: 
-  c(person(given = "Sam",
-           family = "Wilks",
-           role = c("aut", "cre"),
-           email = "sw463@cam.ac.uk"))
+Authors@R: person(given = "Sam",
+                  family = "Wilks",
+                  role = c("aut", "cre"),
+                  email = "sw463@cam.ac.uk")
+Author: Sam Wilks [aut, cre]
+Maintainer: Sam Wilks <sw463@cam.ac.uk>
 Description: A toolkit for making antigenic maps from immunological assay data,
     in order to quantify and visualize antigenic differences between different
     pathogen strains as described in
@@ -37,8 +38,7 @@ Imports:
     dplyr,
     vctrs,
     rlang (>= 1.0.0)
-LazyData: TRUE
-Suggests: 
+Suggests:
     testthat,
     r3js,
     knitr,
@@ -61,10 +61,10 @@ LinkingTo:
     RcppEnsmallen, 
     rapidjsonr
 Encoding: UTF-8
-RoxygenNote: 7.2.3
 Roxygen: list(markdown = TRUE)
 VignetteBuilder: knitr
 URL: https://acorg.github.io/Racmacs/, https://github.com/acorg/Racmacs/
 BugReports: https://github.com/acorg/Racmacs/issues
 License: AGPL-3
 Language: en-GB
+RoxygenNote: 7.2.3

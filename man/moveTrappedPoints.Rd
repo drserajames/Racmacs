@@ -58,6 +58,7 @@ Other map optimization functions:
 \code{\link[=RacOptimizer.options]{RacOptimizer.options()}},
 \code{\link[=make.acmap]{make.acmap()}},
 \code{\link[=optimizeMap]{optimizeMap()}},
+\code{\link[=optimizeMapStart]{optimizeMapStart()}},
 \code{\link[=randomizeCoords]{randomizeCoords()}},
 \code{\link[=relaxMap]{relaxMap()}},
 \code{\link[=relaxMapOneStep]{relaxMapOneStep()}}

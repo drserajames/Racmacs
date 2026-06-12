@@ -27,15 +27,15 @@ Returns the updated acmap object
 This sets the acmap legend used when viewing a map for example.
 }
 \seealso{
-Other functions to view maps: 
-\code{\link{RacViewer.options}()},
-\code{\link{RacViewer}()},
-\code{\link{export_viewer}()},
-\code{\link{ggplot.acmap}()},
-\code{\link{mapGadget}()},
-\code{\link{plot.acmap}()},
-\code{\link{view.acmap}()},
-\code{\link{view.default}()},
-\code{\link{view}()}
+Other functions to view maps:
+\code{\link[=RacViewer]{RacViewer()}},
+\code{\link[=RacViewer.options]{RacViewer.options()}},
+\code{\link[=export_viewer]{export_viewer()}},
+\code{\link[=ggplot.acmap]{ggplot.acmap()}},
+\code{\link[=mapGadget]{mapGadget()}},
+\code{\link[=plot.acmap]{plot.acmap()}},
+\code{\link[=view]{view()}},
+\code{\link[=view.acmap]{view.acmap()}},
+\code{\link[=view.default]{view.default()}}
 }
 \concept{functions to view maps}

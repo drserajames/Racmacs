@@ -16,15 +16,15 @@ A list of numeric matrices with logtiter values
 Return a list of logtiter table layers
 }
 \seealso{
-Other map attribute functions: 
+Other map attribute functions:
 \code{\link{acmapAttributes}},
-\code{\link{adjustedLogTiterTable}()},
-\code{\link{adjustedTiterTable}()},
-\code{\link{dilutionStepsize}()},
-\code{\link{mapDescription}()},
-\code{\link{mapName}()},
-\code{\link{titerTableFlat}()},
-\code{\link{titerTableLayers}()},
-\code{\link{titerTable}()}
+\code{\link[=adjustedLogTiterTable]{adjustedLogTiterTable()}},
+\code{\link[=adjustedTiterTable]{adjustedTiterTable()}},
+\code{\link[=dilutionStepsize]{dilutionStepsize()}},
+\code{\link[=mapDescription]{mapDescription()}},
+\code{\link[=mapName]{mapName()}},
+\code{\link[=titerTable]{titerTable()}},
+\code{\link[=titerTableFlat]{titerTableFlat()}},
+\code{\link[=titerTableLayers]{titerTableLayers()}}
 }
 \concept{map attribute functions}

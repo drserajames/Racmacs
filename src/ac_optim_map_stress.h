@@ -6,7 +6,7 @@
 #ifndef Racmacs__ac_optim_map_stress__h
 #define Racmacs__ac_optim_map_stress__h
 
-// Generating optimizations with randomised coords
+// Generating optimizations with randomised or user-supplied coords
 std::vector<AcOptimization> ac_generateOptimizations(
     const arma::mat &tabledist_matrix,
     const arma::imat &titertype_matrix,
@@ -16,7 +16,8 @@ std::vector<AcOptimization> ac_generateOptimizations(
     const int &num_dims,
     const int &num_optimizations,
     const AcOptimizerOptions &options,
-    const double &dilution_stepsize = 1.0
+    const double &dilution_stepsize = 1.0,
+    const Rcpp::List &starting_coords = Rcpp::List()
 );
 
 // Relaxing optimizations
@@ -40,7 +41,8 @@ std::vector<AcOptimization> ac_runOptimizations(
     const arma::uword &num_optimizations,
     const AcOptimizerOptions &options,
     const arma::mat &titer_weights = arma::mat(),
-    const double &dilution_stepsize = 1.0
+    const double &dilution_stepsize = 1.0,
+    const Rcpp::List &starting_coords = Rcpp::List()
 );
 
 // Sorting optimizations by stress

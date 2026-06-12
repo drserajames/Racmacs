@@ -19,10 +19,10 @@ Prints an html formatted table merge report of a set of merged maps, visualising
 with colors how different titers have been merged together.
 }
 \seealso{
-Other map merging functions: 
-\code{\link{RacMerge.options}()},
-\code{\link{mergeMaps}()},
-\code{\link{mergeReport}()},
-\code{\link{splitTiterLayers}()}
+Other map merging functions:
+\code{\link[=RacMerge.options]{RacMerge.options()}},
+\code{\link[=mergeMaps]{mergeMaps()}},
+\code{\link[=mergeReport]{mergeReport()}},
+\code{\link[=splitTiterLayers]{splitTiterLayers()}}
 }
 \concept{map merging functions}

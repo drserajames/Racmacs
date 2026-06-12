@@ -13,8 +13,8 @@ Nothing returned, called only for the side effect of starting the viewer.
 This function opens the Racmacs GUI in a new window
 }
 \seealso{
-Other shiny app functions: 
+Other shiny app functions:
 \code{\link{RacViewer-shiny}},
-\code{\link{view.acmap}()}
+\code{\link[=view.acmap]{view.acmap()}}
 }
 \concept{shiny app functions}

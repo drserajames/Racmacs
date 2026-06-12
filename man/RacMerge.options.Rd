@@ -41,10 +41,10 @@ dilution_stepsize = 1) would return a value of 10 with the "likelihood"
 method and <40 with the "conservative" method.
 }
 \seealso{
-Other map merging functions: 
-\code{\link{htmlMergeReport}()},
-\code{\link{mergeMaps}()},
-\code{\link{mergeReport}()},
-\code{\link{splitTiterLayers}()}
+Other map merging functions:
+\code{\link[=htmlMergeReport]{htmlMergeReport()}},
+\code{\link[=mergeMaps]{mergeMaps()}},
+\code{\link[=mergeReport]{mergeReport()}},
+\code{\link[=splitTiterLayers]{splitTiterLayers()}}
 }
 \concept{map merging functions}

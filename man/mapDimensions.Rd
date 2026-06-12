@@ -18,12 +18,12 @@ Returns the number of dimensions for the optimization run.
 Get the current map dimensions
 }
 \seealso{
-Other map optimization attribute functions: 
-\code{\link{colBases}()},
-\code{\link{mapComment}()},
-\code{\link{mapStress}()},
-\code{\link{mapTransformation}()},
-\code{\link{ptBaseCoords}()},
-\code{\link{ptCoords}()}
+Other map optimization attribute functions:
+\code{\link[=colBases]{colBases()}},
+\code{\link[=mapComment]{mapComment()}},
+\code{\link[=mapStress]{mapStress()}},
+\code{\link[=mapTransformation]{mapTransformation()}},
+\code{\link[=ptBaseCoords]{ptBaseCoords()}},
+\code{\link[=ptCoords]{ptCoords()}}
 }
 \concept{map optimization attribute functions}

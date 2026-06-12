@@ -16,7 +16,7 @@ A numeric vector
 Returns either the area (for 2D blobs) or volume (for 3D blobs)
 }
 \seealso{
-Other additional plotting functions: 
-\code{\link{blob}()}
+Other additional plotting functions:
+\code{\link[=blob]{blob()}}
 }
 \concept{additional plotting functions}

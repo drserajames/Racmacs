@@ -107,7 +107,8 @@ optimizeMap <- function(
     fixed_col_bases = fixed_column_bases,
     ag_reactivity_adjustments = agReactivityAdjustments(map),
     titer_weights = titer_weights,
-    options = options
+    options = options,
+    starting_coords = list()   # empty = use default random initialisation
   )
 
   # Set disconnected point coordinates to NaN
@@ -223,6 +224,483 @@ make.acmap <- function(
     verbose = verbose,
     options = options
   )
+
+}
+
+
+# ---- Internal helper: genetic (Hamming-MDS) starting coordinates -------------
+#
+# Replicates Steps 2-3 of genetic_init_analysis.R:
+#   1. Build joint pairwise Hamming distance matrix for all ag + sr sequences.
+#   2. Run classical MDS (cmdscale) on the genetic distances.
+#   3. Scale MDS output so RMS genetic distance == RMS table distance.
+#
+# Returns list(ag_coords, sr_coords) at rescaled genetic MDS positions.
+# Per-run Gaussian noise is added in optimizeMapStart(), not here.
+#
+.compute_genetic_coords <- function(map, n_ag, n_sr, ndim, D) {
+
+  ag_seqs <- agSequences(map)
+  sr_seqs <- srSequences(map)
+
+  if (is.null(ag_seqs) || nrow(ag_seqs) == 0 || ncol(ag_seqs) == 0) {
+    stop(
+      "'genetic' starting coordinates require antigen amino acid sequences ",
+      "stored in the map. Use agSequences(map) <- ... to add them.",
+      call. = FALSE
+    )
+  }
+  if (is.null(sr_seqs) || nrow(sr_seqs) == 0 || ncol(sr_seqs) == 0) {
+    stop(
+      "'genetic' starting coordinates require serum amino acid sequences ",
+      "stored in the map. Use srSequences(map) <- ... to add them.",
+      call. = FALSE
+    )
+  }
+
+  all_seqs <- rbind(as.matrix(ag_seqs), as.matrix(sr_seqs))
+  n_all    <- nrow(all_seqs)
+
+  # Pairwise Hamming distances (fraction of positions where sequences differ;
+  # empty strings are treated as gaps and excluded from each comparison)
+  dist_mat <- matrix(0.0, n_all, n_all)
+  for (i in seq_len(n_all - 1L)) {
+    s1 <- all_seqs[i, ]
+    for (j in seq(i + 1L, n_all)) {
+      s2    <- all_seqs[j, ]
+      valid <- s1 != "" & s2 != ""
+      d     <- if (any(valid)) mean(s1[valid] != s2[valid]) else NA_real_
+      dist_mat[i, j] <- d
+      dist_mat[j, i] <- d
+    }
+  }
+
+  # Impute missing pairs with mean observed distance
+  mean_d <- mean(dist_mat[upper.tri(dist_mat)], na.rm = TRUE)
+  if (!is.finite(mean_d)) mean_d <- 0
+  dist_mat[is.na(dist_mat)] <- mean_d
+
+  # Classical MDS on joint genetic distances
+  k_dim <- min(ndim, n_all - 1L)
+  mds   <- stats::cmdscale(stats::as.dist(dist_mat), k = k_dim, eig = FALSE)
+  if (k_dim < ndim) {
+    mds <- cbind(mds, matrix(0.0, n_all, ndim - k_dim))  # zero-pad if needed
+  }
+
+  # Scale to match table-distance spread (RMS genetic dist -> RMS table dist)
+  rms_gen   <- sqrt(mean(dist_mat[upper.tri(dist_mat)]^2))
+  rms_table <- sqrt(mean(D^2, na.rm = TRUE))
+  if (is.finite(rms_gen) && rms_gen > 0) mds <- mds * (rms_table / rms_gen)
+
+  list(
+    ag_coords = mds[seq_len(n_ag),         , drop = FALSE],
+    sr_coords = mds[seq(n_ag + 1L, n_all), , drop = FALSE]
+  )
+}
+
+
+#' Optimize an acmap with custom starting coordinates
+#'
+#' A variant of `optimizeMap()` that lets you control how the starting
+#' coordinates for each optimisation run are chosen.  In standard Racmacs the
+#' L-BFGS optimizer starts each run from uniformly random positions; this
+#' function lets you supply any alternative -- a fixed list of pre-computed
+#' coordinates, a generating function, or one of several built-in
+#' distributions.
+#'
+#' @param map The acmap data object
+#' @param number_of_dimensions The number of dimensions for the new map
+#' @param number_of_optimizations The number of optimization runs to perform
+#' @param starting_coords Specifies how starting coordinates are generated.
+#'   One of three forms:
+#'   \describe{
+#'     \item{**List**}{A pre-computed list of length `number_of_optimizations`.
+#'       Each element must be a named list with entries
+#'       `ag_coords` (n_antigens x n_dimensions matrix) and
+#'       `sr_coords` (n_sera x n_dimensions matrix).}
+#'     \item{**Function**}{A function with signature
+#'       `function(n_ag, n_sr, ndim, D, ...)` that returns
+#'       `list(ag_coords, sr_coords)`.
+#'       It is called once per optimisation run with the numeric table-distance
+#'       matrix `D` (NAs for missing titers) and any additional arguments
+#'       supplied via `coord_args`.}
+#'     \item{**Character string**}{A built-in name (`"uniform"`, `"normal"`,
+#'       `"disk"`, or `"genetic"`) -- see Details -- or the suffix of any
+#'       standard R distribution whose random generator follows the `r<name>()`
+#'       naming convention (e.g. `"t"` for `rt()`, `"cauchy"` for
+#'       `rcauchy()`, `"exp"` for `rexp()`).  Parameters are passed via
+#'       `coord_args`.}
+#'   }
+#' @param coord_args A named list of additional arguments forwarded to the
+#'   generating function or built-in distribution.  Ignored when
+#'   `starting_coords` is a pre-computed list.  Examples:
+#'   `list(table_dist_factor = 3)` for `"uniform"`;
+#'   `list(sd = 2)` for `"normal"`.
+#' @param minimum_column_basis The minimum column basis to use
+#' @param fixed_column_bases A vector of fixed column bases; `NA` entries are
+#'   calculated from `minimum_column_basis`.
+#' @param titer_weights An optional matrix of per-titer weights
+#' @param sort_optimizations Sort optimizations by stress afterwards?
+#' @param check_convergence Check for convergence of the top runs?
+#' @param verbose Report progress messages?
+#' @param options List of optimizer options; see `RacOptimizer.options()`
+#'
+#' @details
+#' ## Built-in named options
+#'
+#' \describe{
+#'   \item{`"uniform"`}{Uniform random draw from
+#'     \eqn{[\mathit{lo},\, \mathit{hi}]^{\mathrm{ndim}}}.
+#'     `coord_args` may contain `min` and `max` (defaults: `+/-max_table_dist`).
+#'     Replicates the standard Racmacs random initialisation.}
+#'   \item{`"normal"`}{Isotropic Gaussian centred at the origin.
+#'     `coord_args` may contain `mean` (default 0) and `sd`
+#'     (default `max_table_dist / 2`).}
+#'   \item{`"disk"`}{Uniform random points inside an n-dimensional ball (a
+#'     circle/disk in 2D, a sphere/ball in 3D).  Points are generated by
+#'     sampling a uniformly random direction on the unit sphere and an
+#'     independent radius scaled as \eqn{r \cdot U^{1/\mathrm{ndim}}} so that
+#'     density is exactly uniform by volume.  `coord_args` may contain `r`
+#'     (radius; default `max_table_dist`).}
+#'   \item{`"genetic"`}{Classical MDS applied to the pairwise Hamming distances
+#'     of all antigen and serum amino acid sequences stored in the map
+#'     (via [agSequences()] and [srSequences()]).  The MDS coordinates are
+#'     scaled so that their RMS spread matches the RMS table distance, then
+#'     small isotropic Gaussian noise is added per run to create diversity.
+#'     `coord_args` may contain `noise_sd` (default `max_table_dist * 0.05`).
+#'     Sequences must be set on the map before calling this function.}
+#' }
+#'
+#' ## Any standard R distribution
+#'
+#' For any distribution with an `r<name>()` function in the search path, pass
+#' the suffix as the string.  All `coord_args` entries are forwarded as named
+#' arguments.  No data-informed scale defaults are applied -- choose parameters
+#' appropriate for your map's antigenic unit scale.
+#'
+#' ```r
+#' # Student-t (heavier tails than normal)
+#' optimizeMapStart(map, 2, 100, starting_coords = "t",
+#'                  coord_args = list(df = 5))
+#'
+#' # Cauchy (very heavy tails)
+#' optimizeMapStart(map, 2, 100, starting_coords = "cauchy",
+#'                  coord_args = list(location = 0, scale = 3))
+#'
+#' # Exponential (one-sided; may be useful with centring)
+#' optimizeMapStart(map, 2, 100, starting_coords = "exp",
+#'                  coord_args = list(rate = 0.2))
+#' ```
+#'
+#' ## Using custom functions
+#'
+#' The function interface is designed to match the five starting-coordinate
+#' algorithms in a companion analysis script.  Any function that accepts
+#' `(n_ag, n_sr, ndim, D)` and returns a named list with `ag_coords` and
+#' `sr_coords` can be supplied directly:
+#'
+#' ```r
+#' optimizeMapStart(
+#'   map, 2, 100,
+#'   starting_coords = start_lhs   # Latin Hypercube
+#' )
+#'
+#' optimizeMapStart(
+#'   map, 2, 100,
+#'   starting_coords = start_cmds_perturbed,
+#'   coord_args = list(noise_sd = 1.5)
+#' )
+#' ```
+#'
+#' ## Dimensional annealing
+#'
+#' `starting_coords` is incompatible with `options = list(dim_annealing = TRUE)`
+#' because dimensional annealing starts in 5D and requires random
+#' initialisation in that higher space.  A warning is issued and dimensional
+#' annealing is disabled when both are supplied.
+#'
+#' @returns Returns the acmap object updated with new optimizations.
+#'
+#' @seealso `optimizeMap()` for the standard (random) optimisation.
+#'   `relaxMap()` to re-relax existing coordinates.
+#'
+#' @family map optimization functions
+#' @export
+#'
+optimizeMapStart <- function(
+  map,
+  number_of_dimensions,
+  number_of_optimizations,
+  starting_coords,
+  coord_args          = list(),
+  minimum_column_basis = "none",
+  fixed_column_bases   = NULL,
+  titer_weights        = NULL,
+  sort_optimizations   = TRUE,
+  check_convergence    = TRUE,
+  verbose              = TRUE,
+  options              = list()
+) {
+
+  n_ag <- numAntigens(map)
+  n_sr <- numSera(map)
+  ndim <- number_of_dimensions
+
+  # Set defaults
+  if (is.null(fixed_column_bases)) fixed_column_bases <- rep(NA_real_, n_sr)
+  if (is.null(titer_weights))      titer_weights      <- matrix(1, n_ag, n_sr)
+
+  # ------------------------------------------------------------------
+  # Resolve starting_coords into a list of n_runs coordinate pairs.
+  # We need the numeric table-distance matrix D for function/string modes.
+  # ------------------------------------------------------------------
+
+  .get_D <- function() {
+    D <- ac_numeric_table_distances(
+      titer_table              = map$titer_table_flat,
+      min_col_basis            = minimum_column_basis,
+      fixed_col_bases          = fixed_column_bases,
+      ag_reactivity_adjustments = agReactivityAdjustments(map)
+    )
+    D[!is.finite(D)] <- NA_real_
+    D
+  }
+
+  if (is.list(starting_coords)) {
+    # ---- Pre-computed list ----
+    if (length(starting_coords) != number_of_optimizations) {
+      stop(sprintf(
+        "`starting_coords` has %d element(s) but `number_of_optimizations` is %d.",
+        length(starting_coords), number_of_optimizations
+      ), call. = FALSE)
+    }
+    coord_list <- starting_coords
+
+  } else if (is.function(starting_coords)) {
+    # ---- User function: called once per run ----
+    D <- .get_D()
+    coord_list <- lapply(seq_len(number_of_optimizations), function(i) {
+      do.call(starting_coords,
+              c(list(n_ag = n_ag, n_sr = n_sr, ndim = ndim, D = D),
+                coord_args))
+    })
+
+  } else if (is.character(starting_coords) && length(starting_coords) == 1L) {
+    # ---- Named built-in distribution ----
+    D      <- .get_D()
+    max_d  <- max(D, na.rm = TRUE)
+
+    n_pts <- n_ag + n_sr
+
+    if (starting_coords == "genetic") {
+      # ---- Genetic / phylogenetic starting coordinates ----------------------
+      # Hamming-distance cMDS from embedded sequences + small per-run noise.
+      noise_sd    <- if (!is.null(coord_args$noise_sd)) coord_args$noise_sd else max_d * 0.05
+      base_coords <- .compute_genetic_coords(map, n_ag, n_sr, ndim, D)
+      coord_list  <- lapply(seq_len(number_of_optimizations), function(i) {
+        noise <- matrix(stats::rnorm(n_pts * ndim, 0, noise_sd), n_pts, ndim)
+        list(
+          ag_coords = base_coords$ag_coords + noise[seq_len(n_ag),         , drop = FALSE],
+          sr_coords = base_coords$sr_coords + noise[seq(n_ag + 1L, n_pts), , drop = FALSE]
+        )
+      })
+
+    } else if (starting_coords == "uniform") {
+      # ---- Uniform hypercube (data-informed defaults) -----------------------
+      lo <- if (!is.null(coord_args$min)) coord_args$min else -max_d
+      hi <- if (!is.null(coord_args$max)) coord_args$max else  max_d
+      coord_list <- lapply(seq_len(number_of_optimizations), function(i) {
+        coords <- matrix(stats::runif(n_pts * ndim, lo, hi), n_pts, ndim)
+        list(
+          ag_coords = coords[seq_len(n_ag),         , drop = FALSE],
+          sr_coords = coords[seq(n_ag + 1L, n_pts), , drop = FALSE]
+        )
+      })
+
+    } else if (starting_coords == "normal") {
+      # ---- Isotropic Gaussian (data-informed defaults) ---------------------
+      mu  <- if (!is.null(coord_args$mean)) coord_args$mean else 0
+      sig <- if (!is.null(coord_args$sd))   coord_args$sd   else max_d / 2
+      coord_list <- lapply(seq_len(number_of_optimizations), function(i) {
+        coords <- matrix(stats::rnorm(n_pts * ndim, mu, sig), n_pts, ndim)
+        list(
+          ag_coords = coords[seq_len(n_ag),         , drop = FALSE],
+          sr_coords = coords[seq(n_ag + 1L, n_pts), , drop = FALSE]
+        )
+      })
+
+    } else if (starting_coords == "disk") {
+      # ---- Uniform within n-ball of radius r (disk in 2D) ------------------
+      # Algorithm: direction = normalised Gaussian vector (uniform on sphere);
+      #            radius    = r * U^(1/ndim) so density is uniform by volume.
+      # This generalises naturally: a 2D disk, 3D ball, etc.
+      r_val <- if (!is.null(coord_args$r)) coord_args$r else max_d
+      coord_list <- lapply(seq_len(number_of_optimizations), function(i) {
+        raw   <- matrix(stats::rnorm(n_pts * ndim), n_pts, ndim)
+        norms <- sqrt(rowSums(raw^2))
+        norms <- pmax(norms, .Machine$double.eps)   # guard against zero vectors
+        dirs  <- raw / norms                         # unit-sphere directions
+        radii <- r_val * stats::runif(n_pts)^(1 / ndim)
+        coords <- dirs * radii
+        list(
+          ag_coords = coords[seq_len(n_ag),         , drop = FALSE],
+          sr_coords = coords[seq(n_ag + 1L, n_pts), , drop = FALSE]
+        )
+      })
+
+    } else {
+      # ---- Any standard R distribution via r*() naming convention -----------
+      rfn <- tryCatch(
+        match.fun(paste0("r", starting_coords)),
+        error = function(e) NULL
+      )
+      if (is.null(rfn)) {
+        stop(sprintf(
+          paste0(
+            "`starting_coords = \"%s\"` is not recognised. Built-in options are ",
+            "\"uniform\", \"normal\", \"disk\", and \"genetic\". For any other ",
+            "distribution, pass the R suffix -- no `r%s()` function was found in ",
+            "the search path."
+          ),
+          starting_coords, starting_coords
+        ), call. = FALSE)
+      }
+      coord_list <- lapply(seq_len(number_of_optimizations), function(i) {
+        raw    <- do.call(rfn, c(list(n_pts * ndim), coord_args))
+        coords <- matrix(raw, n_pts, ndim)
+        list(
+          ag_coords = coords[seq_len(n_ag),         , drop = FALSE],
+          sr_coords = coords[seq(n_ag + 1L, n_pts), , drop = FALSE]
+        )
+      })
+    }
+
+  } else {
+    stop(
+      "`starting_coords` must be a pre-computed list, a generating function, ",
+      "or a character string (\"uniform\", \"normal\", \"disk\", \"genetic\", ",
+      "or any r*() distribution suffix such as \"t\" or \"cauchy\").",
+      call. = FALSE
+    )
+  }
+
+  # ------------------------------------------------------------------
+  # Validate each resolved coordinate pair
+  # ------------------------------------------------------------------
+  for (i in seq_along(coord_list)) {
+    sc <- coord_list[[i]]
+    if (!is.list(sc) || !all(c("ag_coords", "sr_coords") %in% names(sc))) {
+      stop(sprintf(
+        "Element %d of the resolved starting coords is not a named list with 'ag_coords' and 'sr_coords'.",
+        i
+      ), call. = FALSE)
+    }
+    if (!is.matrix(sc$ag_coords) || nrow(sc$ag_coords) != n_ag || ncol(sc$ag_coords) != ndim) {
+      stop(sprintf(
+        "Element %d: `ag_coords` must be a %d x %d numeric matrix.", i, n_ag, ndim
+      ), call. = FALSE)
+    }
+    if (!is.matrix(sc$sr_coords) || nrow(sc$sr_coords) != n_sr || ncol(sc$sr_coords) != ndim) {
+      stop(sprintf(
+        "Element %d: `sr_coords` must be a %d x %d numeric matrix.", i, n_sr, ndim
+      ), call. = FALSE)
+    }
+  }
+
+  # ------------------------------------------------------------------
+  # Standard optimizeMap preamble
+  # ------------------------------------------------------------------
+  if (numOptimizations(map) > 0) {
+    vmessage(verbose, "Discarding previous optimization runs.")
+  }
+  map <- removeOptimizations(map)
+
+  options <- do.call(RacOptimizer.options, options)
+  if (!verbose) options$report_progress <- FALSE
+
+  # Dimensional annealing starts in 5D -- incompatible with fixed-dimension
+  # starting coordinates.  Warn and disable.
+  if (isTRUE(options$dim_annealing)) {
+    warning(
+      "`starting_coords` is incompatible with `dim_annealing = TRUE`; ",
+      "dimensional annealing has been disabled.",
+      call. = FALSE
+    )
+    options$dim_annealing <- FALSE
+  }
+
+  tstart <- Sys.time()
+
+  ag_num_measured <- rowSums(titertypesTable(map) == 1)
+  sr_num_measured <- colSums(titertypesTable(map) == 1)
+
+  ag_disconnected    <- ag_num_measured < ndim
+  sr_disconnected    <- sr_num_measured < ndim
+  ag_underconstrained <- ag_num_measured == ndim
+  sr_underconstrained <- sr_num_measured == ndim
+
+  if (sum(ag_disconnected) > 0)
+    warn_disconnected("ANTIGENS", agNames(map)[ag_disconnected], ndim)
+  if (sum(sr_disconnected) > 0)
+    warn_disconnected("SERA", srNames(map)[sr_disconnected], ndim)
+  if (sum(ag_underconstrained) > 0)
+    warn_underconstrained("ANTIGENS", agNames(map)[ag_underconstrained], ndim)
+  if (sum(sr_underconstrained) > 0)
+    warn_underconstrained("SERA", srNames(map)[sr_underconstrained], ndim)
+
+  if (!options$ignore_disconnected && mapDisconnected(map)) {
+    stop(singleline(
+      "Map contains disconnected points (points that are not connected through
+       any path of detectable titers so cannot be coordinated relative to each other).
+       To optimize anyway, rerun with 'options = list(ignore_disconnected = TRUE)'."
+    ), call. = FALSE)
+  }
+
+  # ------------------------------------------------------------------
+  # Optimise with user-supplied starting coordinates
+  # ------------------------------------------------------------------
+  map <- ac_optimize_map(
+    map                       = map,
+    num_dims                  = ndim,
+    num_optimizations         = number_of_optimizations,
+    min_col_basis             = minimum_column_basis,
+    fixed_col_bases           = fixed_column_bases,
+    ag_reactivity_adjustments = agReactivityAdjustments(map),
+    titer_weights             = titer_weights,
+    options                   = options,
+    starting_coords           = coord_list
+  )
+
+  # Set disconnected point coordinates to NaN
+  for (n in seq_len(numOptimizations(map))) {
+    opt_stress <- optStress(map, n)
+    agBaseCoords(map, n)[ag_disconnected, ] <- NaN
+    srBaseCoords(map, n)[sr_disconnected, ] <- NaN
+    optStress(map, n) <- opt_stress
+  }
+
+  tend    <- Sys.time()
+  tlength <- round(tend - tstart, 2)
+  vmessage(verbose, "Took ", format(unclass(tlength)), " ", attr(tlength, "units"), "\n")
+
+  if (check_convergence && numOptimizations(map) > 1) {
+    pcmap    <- map
+    agNames(pcmap) <- paste("AG", seq_len(numAntigens(pcmap)))
+    srNames(pcmap) <- paste("SR", seq_len(numSera(pcmap)))
+    procrustes_data  <- procrustesData(pcmap, pcmap, comparison_optimization_number = 2)
+    procrustes_dists <- c(procrustes_data$ag_dists, procrustes_data$sr_dists)
+    if (max(procrustes_dists, na.rm = TRUE) > 0.5) {
+      warning(sprintf(
+        singleline("There is some variation (%s AU for one point) in the top runs,
+                   this may be an indication that more optimization runs could help
+                   achieve a better optimum. If this still fails to help see
+                   ?unstableMaps for further possible causes."),
+        round(max(procrustes_dists, na.rm = TRUE), 2)
+      ))
+    }
+  }
+
+  map
 
 }
 
@@ -627,6 +1105,8 @@ moveTrappedPoints <- function(
   randomize_distance = 20,
   options = list()
   ) {
+
+  method <- match.arg(method, c("racmacs", "lispmds"))
 
   # Move trapped points in the optimization
   map$optimizations[[optimization_number]] <- ac_move_trapped_points(

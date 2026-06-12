@@ -34,12 +34,12 @@ run.
 \code{agCoords()}
 \code{srCoords()}
 
-Other map optimization attribute functions: 
-\code{\link{colBases}()},
-\code{\link{mapComment}()},
-\code{\link{mapDimensions}()},
-\code{\link{mapStress}()},
-\code{\link{mapTransformation}()},
-\code{\link{ptCoords}()}
+Other map optimization attribute functions:
+\code{\link[=colBases]{colBases()}},
+\code{\link[=mapComment]{mapComment()}},
+\code{\link[=mapDimensions]{mapDimensions()}},
+\code{\link[=mapStress]{mapStress()}},
+\code{\link[=mapTransformation]{mapTransformation()}},
+\code{\link[=ptCoords]{ptCoords()}}
 }
 \concept{map optimization attribute functions}
