@@ -304,7 +304,7 @@ make.acmap <- function(
 #' A variant of `optimizeMap()` that lets you control how the starting
 #' coordinates for each optimisation run are chosen.  In standard Racmacs the
 #' L-BFGS optimizer starts each run from uniformly random positions; this
-#' function lets you supply any alternative — a fixed list of pre-computed
+#' function lets you supply any alternative -- a fixed list of pre-computed
 #' coordinates, a generating function, or one of several built-in
 #' distributions.
 #'
@@ -316,8 +316,8 @@ make.acmap <- function(
 #'   \describe{
 #'     \item{**List**}{A pre-computed list of length `number_of_optimizations`.
 #'       Each element must be a named list with entries
-#'       `ag_coords` (n_antigens × n_dimensions matrix) and
-#'       `sr_coords` (n_sera × n_dimensions matrix).}
+#'       `ag_coords` (n_antigens x n_dimensions matrix) and
+#'       `sr_coords` (n_sera x n_dimensions matrix).}
 #'     \item{**Function**}{A function with signature
 #'       `function(n_ag, n_sr, ndim, D, ...)` that returns
 #'       `list(ag_coords, sr_coords)`.
@@ -325,7 +325,7 @@ make.acmap <- function(
 #'       matrix `D` (NAs for missing titers) and any additional arguments
 #'       supplied via `coord_args`.}
 #'     \item{**Character string**}{A built-in name (`"uniform"`, `"normal"`,
-#'       `"disk"`, or `"genetic"`) — see Details — or the suffix of any
+#'       `"disk"`, or `"genetic"`) -- see Details -- or the suffix of any
 #'       standard R distribution whose random generator follows the `r<name>()`
 #'       naming convention (e.g. `"t"` for `rt()`, `"cauchy"` for
 #'       `rcauchy()`, `"exp"` for `rexp()`).  Parameters are passed via
@@ -351,7 +351,7 @@ make.acmap <- function(
 #' \describe{
 #'   \item{`"uniform"`}{Uniform random draw from
 #'     \eqn{[\mathit{lo},\, \mathit{hi}]^{\mathrm{ndim}}}.
-#'     `coord_args` may contain `min` and `max` (defaults: `±max_table_dist`).
+#'     `coord_args` may contain `min` and `max` (defaults: `+/-max_table_dist`).
 #'     Replicates the standard Racmacs random initialisation.}
 #'   \item{`"normal"`}{Isotropic Gaussian centred at the origin.
 #'     `coord_args` may contain `mean` (default 0) and `sd`
@@ -375,7 +375,7 @@ make.acmap <- function(
 #'
 #' For any distribution with an `r<name>()` function in the search path, pass
 #' the suffix as the string.  All `coord_args` entries are forwarded as named
-#' arguments.  No data-informed scale defaults are applied — choose parameters
+#' arguments.  No data-informed scale defaults are applied -- choose parameters
 #' appropriate for your map's antigenic unit scale.
 #'
 #' ```r
@@ -559,7 +559,7 @@ optimizeMapStart <- function(
           paste0(
             "`starting_coords = \"%s\"` is not recognised. Built-in options are ",
             "\"uniform\", \"normal\", \"disk\", and \"genetic\". For any other ",
-            "distribution, pass the R suffix — no `r%s()` function was found in ",
+            "distribution, pass the R suffix -- no `r%s()` function was found in ",
             "the search path."
           ),
           starting_coords, starting_coords
@@ -597,12 +597,12 @@ optimizeMapStart <- function(
     }
     if (!is.matrix(sc$ag_coords) || nrow(sc$ag_coords) != n_ag || ncol(sc$ag_coords) != ndim) {
       stop(sprintf(
-        "Element %d: `ag_coords` must be a %d × %d numeric matrix.", i, n_ag, ndim
+        "Element %d: `ag_coords` must be a %d x %d numeric matrix.", i, n_ag, ndim
       ), call. = FALSE)
     }
     if (!is.matrix(sc$sr_coords) || nrow(sc$sr_coords) != n_sr || ncol(sc$sr_coords) != ndim) {
       stop(sprintf(
-        "Element %d: `sr_coords` must be a %d × %d numeric matrix.", i, n_sr, ndim
+        "Element %d: `sr_coords` must be a %d x %d numeric matrix.", i, n_sr, ndim
       ), call. = FALSE)
     }
   }
@@ -618,7 +618,7 @@ optimizeMapStart <- function(
   options <- do.call(RacOptimizer.options, options)
   if (!verbose) options$report_progress <- FALSE
 
-  # Dimensional annealing starts in 5D — incompatible with fixed-dimension
+  # Dimensional annealing starts in 5D -- incompatible with fixed-dimension
   # starting coordinates.  Warn and disable.
   if (isTRUE(options$dim_annealing)) {
     warning(

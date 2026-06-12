@@ -18,3 +18,13 @@
 ^cran-comments\.md$
 ^vignettes/figures$
 ^vignettes/intro-to-antigenic-cartography\.Rmd$
+^\.claude$
+^\.git$
+^\.DS_Store$
+^\.RData$
+^\.Rhistory$
+^\.Rproj\.user$
+^\.\.[^/]*Rcheck$
+^src/.*\.o$
+^src/.*\.so$
+^CLAUDE\.md$

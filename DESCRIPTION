@@ -38,8 +38,7 @@ Imports:
     dplyr,
     vctrs,
     rlang (>= 1.0.0)
-LazyData: TRUE
-Suggests: 
+Suggests:
     testthat,
     r3js,
     knitr,
