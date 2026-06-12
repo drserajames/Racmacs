@@ -282,7 +282,7 @@ make.acmap <- function(
 
   # Classical MDS on joint genetic distances
   k_dim <- min(ndim, n_all - 1L)
-  mds   <- cmdscale(as.dist(dist_mat), k = k_dim, eig = FALSE)
+  mds   <- stats::cmdscale(stats::as.dist(dist_mat), k = k_dim, eig = FALSE)
   if (k_dim < ndim) {
     mds <- cbind(mds, matrix(0.0, n_all, ndim - k_dim))  # zero-pad if needed
   }
