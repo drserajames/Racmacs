@@ -21,15 +21,15 @@ value.
 S3 method for viewing objects
 }
 \seealso{
-Other functions to view maps: 
-\code{\link{RacViewer.options}()},
-\code{\link{RacViewer}()},
-\code{\link{export_viewer}()},
-\code{\link{ggplot.acmap}()},
-\code{\link{mapGadget}()},
-\code{\link{plot.acmap}()},
-\code{\link{setLegend}()},
-\code{\link{view.acmap}()},
-\code{\link{view.default}()}
+Other functions to view maps:
+\code{\link[=RacViewer]{RacViewer()}},
+\code{\link[=RacViewer.options]{RacViewer.options()}},
+\code{\link[=export_viewer]{export_viewer()}},
+\code{\link[=ggplot.acmap]{ggplot.acmap()}},
+\code{\link[=mapGadget]{mapGadget()}},
+\code{\link[=plot.acmap]{plot.acmap()}},
+\code{\link[=setLegend]{setLegend()}},
+\code{\link[=view.acmap]{view.acmap()}},
+\code{\link[=view.default]{view.default()}}
 }
 \concept{functions to view maps}

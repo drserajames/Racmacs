@@ -281,7 +281,8 @@ void AcMap::optimize(
     arma::vec fixed_col_bases,
     arma::vec ag_reactivity_adjustments,
     const AcOptimizerOptions &options,
-    const arma::mat &titer_weights
+    const arma::mat &titer_weights,
+    const Rcpp::List &starting_coords
 ){
 
   // Run optimizations
@@ -294,7 +295,8 @@ void AcMap::optimize(
     num_optimizations,
     options,
     titer_weights,
-    dilution_stepsize
+    dilution_stepsize,
+    starting_coords
   );
 
 }

@@ -31,15 +31,15 @@ allow you to manipulate the flat version without affecting the titer table
 layers information.
 }
 \seealso{
-Other map attribute functions: 
+Other map attribute functions:
 \code{\link{acmapAttributes}},
-\code{\link{adjustedLogTiterTable}()},
-\code{\link{adjustedTiterTable}()},
-\code{\link{dilutionStepsize}()},
-\code{\link{logtiterTableLayers}()},
-\code{\link{mapDescription}()},
-\code{\link{mapName}()},
-\code{\link{titerTableLayers}()},
-\code{\link{titerTable}()}
+\code{\link[=adjustedLogTiterTable]{adjustedLogTiterTable()}},
+\code{\link[=adjustedTiterTable]{adjustedTiterTable()}},
+\code{\link[=dilutionStepsize]{dilutionStepsize()}},
+\code{\link[=logtiterTableLayers]{logtiterTableLayers()}},
+\code{\link[=mapDescription]{mapDescription()}},
+\code{\link[=mapName]{mapName()}},
+\code{\link[=titerTable]{titerTable()}},
+\code{\link[=titerTableLayers]{titerTableLayers()}}
 }
 \concept{map attribute functions}

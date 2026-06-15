@@ -27,9 +27,9 @@ colors, you alter the fill and outline opacities yourself, for example
 with the \code{grDevices::adjustcolor()} function.
 }
 \seealso{
-Other map point style functions: 
-\code{\link{applyPlotspec}()},
-\code{\link{ptDrawingOrder}()},
+Other map point style functions:
+\code{\link[=applyPlotspec]{applyPlotspec()}},
+\code{\link[=ptDrawingOrder]{ptDrawingOrder()}},
 \code{\link{ptStyles}}
 }
 \concept{map point style functions}

@@ -51,10 +51,10 @@ specified by \code{optimization_number} is kept in the map returned.
 Returns information from one map procrusted to another.
 }
 \seealso{
-Other functions to compare maps: 
+Other functions to compare maps:
 \code{\link{matchStrains}},
-\code{\link{procrustesData}()},
-\code{\link{realignMap}()},
-\code{\link{realignOptimizations}()}
+\code{\link[=procrustesData]{procrustesData()}},
+\code{\link[=realignMap]{realignMap()}},
+\code{\link[=realignOptimizations]{realignOptimizations()}}
 }
 \concept{functions to compare maps}

@@ -24,8 +24,8 @@ are indexed in the same order as antigens then followed by
 sera.
 }
 \seealso{
-Other map point style functions: 
-\code{\link{applyPlotspec}()},
+Other map point style functions:
+\code{\link[=applyPlotspec]{applyPlotspec()}},
 \code{\link{ptOpacity}},
 \code{\link{ptStyles}}
 }

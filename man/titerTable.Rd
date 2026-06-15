@@ -26,15 +26,15 @@ together previously and you then go on the merge the titers again.
 \seealso{
 \code{\link[=adjustedTiterTable]{adjustedTiterTable()}}, \code{\link[=htmlTiterTable]{htmlTiterTable()}}
 
-Other map attribute functions: 
+Other map attribute functions:
 \code{\link{acmapAttributes}},
-\code{\link{adjustedLogTiterTable}()},
-\code{\link{adjustedTiterTable}()},
-\code{\link{dilutionStepsize}()},
-\code{\link{logtiterTableLayers}()},
-\code{\link{mapDescription}()},
-\code{\link{mapName}()},
-\code{\link{titerTableFlat}()},
-\code{\link{titerTableLayers}()}
+\code{\link[=adjustedLogTiterTable]{adjustedLogTiterTable()}},
+\code{\link[=adjustedTiterTable]{adjustedTiterTable()}},
+\code{\link[=dilutionStepsize]{dilutionStepsize()}},
+\code{\link[=logtiterTableLayers]{logtiterTableLayers()}},
+\code{\link[=mapDescription]{mapDescription()}},
+\code{\link[=mapName]{mapName()}},
+\code{\link[=titerTableFlat]{titerTableFlat()}},
+\code{\link[=titerTableLayers]{titerTableLayers()}}
 }
 \concept{map attribute functions}

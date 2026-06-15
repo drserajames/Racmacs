@@ -49,12 +49,12 @@ column bases case, column bases will remain fixed at their values
 independently of measured titers.
 }
 \seealso{
-Other map optimization attribute functions: 
-\code{\link{mapComment}()},
-\code{\link{mapDimensions}()},
-\code{\link{mapStress}()},
-\code{\link{mapTransformation}()},
-\code{\link{ptBaseCoords}()},
-\code{\link{ptCoords}()}
+Other map optimization attribute functions:
+\code{\link[=mapComment]{mapComment()}},
+\code{\link[=mapDimensions]{mapDimensions()}},
+\code{\link[=mapStress]{mapStress()}},
+\code{\link[=mapTransformation]{mapTransformation()}},
+\code{\link[=ptBaseCoords]{ptBaseCoords()}},
+\code{\link[=ptCoords]{ptCoords()}}
 }
 \concept{map optimization attribute functions}

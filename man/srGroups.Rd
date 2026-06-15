@@ -21,16 +21,16 @@ A factor vector of serum groups
 These functions get and set the sera groupings for a map.
 }
 \seealso{
-Other antigen and sera attribute functions: 
+Other antigen and sera attribute functions:
 \code{\link{agAttributes}},
-\code{\link{agGroups}()},
-\code{\link{agHomologousSr}()},
-\code{\link{agLabIDs}()},
-\code{\link{agSequences}()},
+\code{\link[=agGroups]{agGroups()}},
+\code{\link[=agHomologousSr]{agHomologousSr()}},
+\code{\link[=agLabIDs]{agLabIDs()}},
+\code{\link[=agSequences]{agSequences()}},
 \code{\link{ptAnnotations}},
 \code{\link{ptClades}},
 \code{\link{srAttributes}},
-\code{\link{srHomologousAgs}()},
-\code{\link{srSequences}()}
+\code{\link[=srHomologousAgs]{srHomologousAgs()}},
+\code{\link[=srSequences]{srSequences()}}
 }
 \concept{antigen and sera attribute functions}

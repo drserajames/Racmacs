@@ -19,15 +19,15 @@ A numeric matrix of adjusted log titers.
 Return the log titer table plus any antigen reactivity adjustments.
 }
 \seealso{
-Other map attribute functions: 
+Other map attribute functions:
 \code{\link{acmapAttributes}},
-\code{\link{adjustedTiterTable}()},
-\code{\link{dilutionStepsize}()},
-\code{\link{logtiterTableLayers}()},
-\code{\link{mapDescription}()},
-\code{\link{mapName}()},
-\code{\link{titerTableFlat}()},
-\code{\link{titerTableLayers}()},
-\code{\link{titerTable}()}
+\code{\link[=adjustedTiterTable]{adjustedTiterTable()}},
+\code{\link[=dilutionStepsize]{dilutionStepsize()}},
+\code{\link[=logtiterTableLayers]{logtiterTableLayers()}},
+\code{\link[=mapDescription]{mapDescription()}},
+\code{\link[=mapName]{mapName()}},
+\code{\link[=titerTable]{titerTable()}},
+\code{\link[=titerTableFlat]{titerTableFlat()}},
+\code{\link[=titerTableLayers]{titerTableLayers()}}
 }
 \concept{map attribute functions}

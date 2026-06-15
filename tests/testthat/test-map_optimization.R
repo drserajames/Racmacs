@@ -511,6 +511,14 @@ test_that("Moving trapped points with lispmds method", {
 })
 
 
+test_that("moveTrappedPoints errors on invalid method", {
+  expect_error(
+    moveTrappedPoints(map4_lispmds, method = "foo"),
+    "arg.*should be one of"
+  )
+})
+
+
 # Randomizing coordinates
 test_that("Randomize map coordinates", {
 

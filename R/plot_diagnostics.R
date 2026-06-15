@@ -119,7 +119,7 @@ plotly_map_table_distance <- function(
     xlim = xlim,
     ylim = ylim
   )
-  plotly::ggplotly(gp, tooltip = "text")
+  as.plotly(gp)
 
 }
 
@@ -209,15 +209,15 @@ plotly_sr_titers <- function(
   optimization_number = 1
   ) {
 
-  plotly::ggplotly(
+  as.plotly(
     plot_sr_titers(
       map                 = map,
       serum               = serum,
       xlim                = xlim,
       ylim                = ylim,
-      optimization_number = optimization_number
-    ),
-    tooltip = "text"
+      optimization_number = optimization_number,
+      .plot               = FALSE
+    )
   )
 
 }

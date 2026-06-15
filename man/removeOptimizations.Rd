@@ -16,9 +16,9 @@ An acmap object with all optimizations removed
 Remove all optimization run data from a map object
 }
 \seealso{
-Other functions to work with map optimizations: 
-\code{\link{keepOptimizations}()},
+Other functions to work with map optimizations:
+\code{\link[=keepOptimizations]{keepOptimizations()}},
 \code{\link{optimizationProperties}},
-\code{\link{sortOptimizations}()}
+\code{\link[=sortOptimizations]{sortOptimizations()}}
 }
 \concept{functions to work with map optimizations}

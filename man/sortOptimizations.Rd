@@ -18,9 +18,9 @@ Sorts all the optimization runs for a given map object by stress
 \code{optimizeMap()}.
 }
 \seealso{
-Other functions to work with map optimizations: 
-\code{\link{keepOptimizations}()},
+Other functions to work with map optimizations:
+\code{\link[=keepOptimizations]{keepOptimizations()}},
 \code{\link{optimizationProperties}},
-\code{\link{removeOptimizations}()}
+\code{\link[=removeOptimizations]{removeOptimizations()}}
 }
 \concept{functions to work with map optimizations}

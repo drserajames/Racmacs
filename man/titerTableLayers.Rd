@@ -31,15 +31,15 @@ different maps, these functions can be useful to check for example,
 variation in titer seen between a single antigen and serum pair.
 }
 \seealso{
-Other map attribute functions: 
+Other map attribute functions:
 \code{\link{acmapAttributes}},
-\code{\link{adjustedLogTiterTable}()},
-\code{\link{adjustedTiterTable}()},
-\code{\link{dilutionStepsize}()},
-\code{\link{logtiterTableLayers}()},
-\code{\link{mapDescription}()},
-\code{\link{mapName}()},
-\code{\link{titerTableFlat}()},
-\code{\link{titerTable}()}
+\code{\link[=adjustedLogTiterTable]{adjustedLogTiterTable()}},
+\code{\link[=adjustedTiterTable]{adjustedTiterTable()}},
+\code{\link[=dilutionStepsize]{dilutionStepsize()}},
+\code{\link[=logtiterTableLayers]{logtiterTableLayers()}},
+\code{\link[=mapDescription]{mapDescription()}},
+\code{\link[=mapName]{mapName()}},
+\code{\link[=titerTable]{titerTable()}},
+\code{\link[=titerTableFlat]{titerTableFlat()}}
 }
 \concept{map attribute functions}

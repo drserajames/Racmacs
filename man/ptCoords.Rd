@@ -59,12 +59,12 @@ transformation directly, as is done by functions like \code{rotateMap()} and
 \code{mapTransformation()}
 \code{mapTranslation()}
 
-Other map optimization attribute functions: 
-\code{\link{colBases}()},
-\code{\link{mapComment}()},
-\code{\link{mapDimensions}()},
-\code{\link{mapStress}()},
-\code{\link{mapTransformation}()},
-\code{\link{ptBaseCoords}()}
+Other map optimization attribute functions:
+\code{\link[=colBases]{colBases()}},
+\code{\link[=mapComment]{mapComment()}},
+\code{\link[=mapDimensions]{mapDimensions()}},
+\code{\link[=mapStress]{mapStress()}},
+\code{\link[=mapTransformation]{mapTransformation()}},
+\code{\link[=ptBaseCoords]{ptBaseCoords()}}
 }
 \concept{map optimization attribute functions}

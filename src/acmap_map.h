@@ -120,7 +120,8 @@ class AcMap {
       arma::vec fixed_col_bases,
       arma::vec ag_reactivity_adjustments,
       const AcOptimizerOptions &options,
-      const arma::mat &titer_weights = arma::mat()
+      const arma::mat &titer_weights = arma::mat(),
+      const Rcpp::List &starting_coords = Rcpp::List()
     );
 
     // Shuffling optimizations

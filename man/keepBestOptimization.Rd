@@ -16,23 +16,23 @@ An acmap object with only the lowest stress optimization kept
 Keep only the lowest stress map optimization
 }
 \seealso{
-Other functions for working with map data: 
-\code{\link{acmap}()},
-\code{\link{addOptimization}()},
-\code{\link{agReactivityAdjustments}()},
-\code{\link{as.json}()},
-\code{\link{edit_agNames}()},
-\code{\link{edit_srNames}()},
-\code{\link{keepSingleOptimization}()},
-\code{\link{layerNames}()},
+Other functions for working with map data:
+\code{\link[=acmap]{acmap()}},
+\code{\link[=addOptimization]{addOptimization()}},
+\code{\link[=agReactivityAdjustments]{agReactivityAdjustments()}},
+\code{\link[=as.json]{as.json()}},
+\code{\link[=edit_agNames]{edit_agNames()}},
+\code{\link[=edit_srNames]{edit_srNames()}},
+\code{\link[=keepSingleOptimization]{keepSingleOptimization()}},
+\code{\link[=layerNames]{layerNames()}},
 \code{\link{orderPoints}},
-\code{\link{read.acmap}()},
-\code{\link{read.titerTable}()},
+\code{\link[=read.acmap]{read.acmap()}},
+\code{\link[=read.titerTable]{read.titerTable()}},
 \code{\link{removePoints}},
-\code{\link{save.acmap}()},
-\code{\link{save.coords}()},
-\code{\link{save.titerTable}()},
+\code{\link[=save.acmap]{save.acmap()}},
+\code{\link[=save.coords]{save.coords()}},
+\code{\link[=save.titerTable]{save.titerTable()}},
 \code{\link{subsetCommonPoints}},
-\code{\link{subsetMap}()}
+\code{\link[=subsetMap]{subsetMap()}}
 }
 \concept{functions for working with map data}

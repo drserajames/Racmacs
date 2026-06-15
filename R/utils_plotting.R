@@ -19,6 +19,17 @@ as.plotly <- function(gp, tooltip = "text", scaling = NULL) {
   # Check plotly available
   package_required("plotly")
 
+  # Check plotly/ggplot2 version compatibility
+  if (!plotly_ggplot2_compatible()) {
+    warning(
+      "plotly ", utils::packageVersion("plotly"), " is not compatible with ",
+      "ggplot2 ", utils::packageVersion("ggplot2"), ". ",
+      "Please update plotly to >= 4.10.4: install.packages(\"plotly\")",
+      call. = FALSE
+    )
+    return(invisible(NULL))
+  }
+
   if (!is.null(scaling)) {
 
     # Scale axis text
@@ -79,6 +90,15 @@ as.plotly <- function(gp, tooltip = "text", scaling = NULL) {
 
   gp
 
+}
+
+
+# Returns TRUE when the installed plotly version works with the installed
+# ggplot2 version. plotly <= 4.10.3 calls ggplot2 internals that were removed
+# in ggplot2 3.5.0; plotly >= 4.10.4 updated those call sites.
+plotly_ggplot2_compatible <- function() {
+  utils::packageVersion("plotly")  >= "4.10.4" ||
+  utils::packageVersion("ggplot2") <  "3.5.0"
 }
 
 

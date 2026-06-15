@@ -73,5 +73,10 @@ Useful links:
 \author{
 \strong{Maintainer}: Sam Wilks \email{sw463@cam.ac.uk}
 
+Authors:
+\itemize{
+  \item Sam Wilks \email{sw463@cam.ac.uk}
+}
+
 }
 \keyword{internal}

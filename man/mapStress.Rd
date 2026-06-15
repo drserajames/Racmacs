@@ -18,12 +18,12 @@ A number giving the map stress
 Calculate the current map stress
 }
 \seealso{
-Other map optimization attribute functions: 
-\code{\link{colBases}()},
-\code{\link{mapComment}()},
-\code{\link{mapDimensions}()},
-\code{\link{mapTransformation}()},
-\code{\link{ptBaseCoords}()},
-\code{\link{ptCoords}()}
+Other map optimization attribute functions:
+\code{\link[=colBases]{colBases()}},
+\code{\link[=mapComment]{mapComment()}},
+\code{\link[=mapDimensions]{mapDimensions()}},
+\code{\link[=mapTransformation]{mapTransformation()}},
+\code{\link[=ptBaseCoords]{ptBaseCoords()}},
+\code{\link[=ptCoords]{ptCoords()}}
 }
 \concept{map optimization attribute functions}

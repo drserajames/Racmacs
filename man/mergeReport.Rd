@@ -16,10 +16,10 @@ Returns a character matrix of information on merged titers.
 Prints a raw text merge report from merging two map tables.
 }
 \seealso{
-Other map merging functions: 
-\code{\link{RacMerge.options}()},
-\code{\link{htmlMergeReport}()},
-\code{\link{mergeMaps}()},
-\code{\link{splitTiterLayers}()}
+Other map merging functions:
+\code{\link[=RacMerge.options]{RacMerge.options()}},
+\code{\link[=htmlMergeReport]{htmlMergeReport()}},
+\code{\link[=mergeMaps]{mergeMaps()}},
+\code{\link[=splitTiterLayers]{splitTiterLayers()}}
 }
 \concept{map merging functions}

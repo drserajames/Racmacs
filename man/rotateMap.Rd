@@ -23,9 +23,9 @@ An acmap object with rotation applied
 Apply a rotation to an antigenic map
 }
 \seealso{
-Other functions relating to map transformation: 
-\code{\link{applyMapTransform}()},
-\code{\link{reflectMap}()},
-\code{\link{translateMap}()}
+Other functions relating to map transformation:
+\code{\link[=applyMapTransform]{applyMapTransform()}},
+\code{\link[=reflectMap]{reflectMap()}},
+\code{\link[=translateMap]{translateMap()}}
 }
 \concept{functions relating to map transformation}

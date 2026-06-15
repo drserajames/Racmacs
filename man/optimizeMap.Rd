@@ -71,12 +71,13 @@ bases and what they mean see \code{vignette("intro-to-antigenic-cartography")}.
 See \code{relaxMap()} for optimizing a given optimization starting from
 its current coordinates.
 
-Other map optimization functions: 
-\code{\link{RacOptimizer.options}()},
-\code{\link{make.acmap}()},
-\code{\link{moveTrappedPoints}()},
-\code{\link{randomizeCoords}()},
-\code{\link{relaxMapOneStep}()},
-\code{\link{relaxMap}()}
+Other map optimization functions:
+\code{\link[=RacOptimizer.options]{RacOptimizer.options()}},
+\code{\link[=make.acmap]{make.acmap()}},
+\code{\link[=moveTrappedPoints]{moveTrappedPoints()}},
+\code{\link[=optimizeMapStart]{optimizeMapStart()}},
+\code{\link[=randomizeCoords]{randomizeCoords()}},
+\code{\link[=relaxMap]{relaxMap()}},
+\code{\link[=relaxMapOneStep]{relaxMapOneStep()}}
 }
 \concept{map optimization functions}

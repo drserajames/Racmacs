@@ -38,15 +38,15 @@ the dilution stepsize as 0. Equally, if the dilution regime followed a
 different pattern, you can also set that here.
 }
 \seealso{
-Other map attribute functions: 
+Other map attribute functions:
 \code{\link{acmapAttributes}},
-\code{\link{adjustedLogTiterTable}()},
-\code{\link{adjustedTiterTable}()},
-\code{\link{logtiterTableLayers}()},
-\code{\link{mapDescription}()},
-\code{\link{mapName}()},
-\code{\link{titerTableFlat}()},
-\code{\link{titerTableLayers}()},
-\code{\link{titerTable}()}
+\code{\link[=adjustedLogTiterTable]{adjustedLogTiterTable()}},
+\code{\link[=adjustedTiterTable]{adjustedTiterTable()}},
+\code{\link[=logtiterTableLayers]{logtiterTableLayers()}},
+\code{\link[=mapDescription]{mapDescription()}},
+\code{\link[=mapName]{mapName()}},
+\code{\link[=titerTable]{titerTable()}},
+\code{\link[=titerTableFlat]{titerTableFlat()}},
+\code{\link[=titerTableLayers]{titerTableLayers()}}
 }
 \concept{map attribute functions}

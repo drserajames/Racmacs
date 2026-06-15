@@ -21,9 +21,9 @@ An acmap object with reflection applied
 Reflects map coordinates
 }
 \seealso{
-Other functions relating to map transformation: 
-\code{\link{applyMapTransform}()},
-\code{\link{rotateMap}()},
-\code{\link{translateMap}()}
+Other functions relating to map transformation:
+\code{\link[=applyMapTransform]{applyMapTransform()}},
+\code{\link[=rotateMap]{rotateMap()}},
+\code{\link[=translateMap]{translateMap()}}
 }
 \concept{functions relating to map transformation}
