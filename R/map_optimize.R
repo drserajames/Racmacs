@@ -812,6 +812,15 @@ RacOptimizer.options <- function(
 #' @param fixed_sera Sera to set fixed positions for when relaxing
 #' @param titer_weights An optional matrix of weights to assign each titer when optimizing
 #' @param options List of named optimizer options, see `RacOptimizer.options()`
+#' @param num_dimensions Target number of dimensions for dimensional annealing.
+#'   When `NULL` (default) the map is relaxed in its current number of dimensions.
+#'   When set to a positive integer less than the map's current number of
+#'   dimensions, dimensional annealing is performed: the map is first relaxed in
+#'   its current dimensionality, then projected to the next lower dimension via
+#'   PCA, relaxed again, and so on, until the target dimensionality is reached.
+#'   The returned map will have `num_dimensions` dimensions.  Setting
+#'   `num_dimensions` equal to the map's current dimensions is equivalent to
+#'   the default behaviour.
 #'
 #' @returns Returns an acmap object with the optimization relaxed.
 #'
@@ -827,7 +836,8 @@ relaxMap <- function(
   fixed_antigens = FALSE,
   fixed_sera = FALSE,
   titer_weights = NULL,
-  options = list()
+  options = list(),
+  num_dimensions = NULL
   ) {
 
   # Get options
@@ -841,16 +851,45 @@ relaxMap <- function(
   fixed_antigens <- get_ag_indices(fixed_antigens, map)
   fixed_sera     <- get_sr_indices(fixed_sera, map)
 
+  # Validate and handle num_dimensions
+  current_dims <- mapDimensions(map, optimization_number)
+  if (!is.null(num_dimensions)) {
+    if (!is.numeric(num_dimensions) || length(num_dimensions) != 1 ||
+        num_dimensions != as.integer(num_dimensions) || num_dimensions < 1) {
+      stop("num_dimensions must be a single positive integer")
+    }
+    num_dimensions <- as.integer(num_dimensions)
+    if (num_dimensions > current_dims) {
+      stop(sprintf(
+        "num_dimensions (%d) must not exceed the map's current number of dimensions (%d)",
+        num_dimensions, current_dims
+      ))
+    }
+  }
+
   # Run relaxation
-  map$optimizations[[optimization_number]] <- ac_relaxOptimization(
-    opt = map$optimizations[[optimization_number]],
-    titers = titerTable(map),
-    fixed_antigens = fixed_antigens - 1,
-    fixed_sera = fixed_sera - 1,
-    options = options,
-    titer_weights = titer_weights,
-    dilution_stepsize = dilutionStepsize(map)
-  )
+  if (!is.null(num_dimensions) && num_dimensions < current_dims) {
+    map$optimizations[[optimization_number]] <- ac_relaxOptimization_dimAnnealing(
+      opt = map$optimizations[[optimization_number]],
+      titers = titerTable(map),
+      fixed_antigens = fixed_antigens - 1,
+      fixed_sera = fixed_sera - 1,
+      options = options,
+      titer_weights = titer_weights,
+      dilution_stepsize = dilutionStepsize(map),
+      target_dimensions = num_dimensions
+    )
+  } else {
+    map$optimizations[[optimization_number]] <- ac_relaxOptimization(
+      opt = map$optimizations[[optimization_number]],
+      titers = titerTable(map),
+      fixed_antigens = fixed_antigens - 1,
+      fixed_sera = fixed_sera - 1,
+      options = options,
+      titer_weights = titer_weights,
+      dilution_stepsize = dilutionStepsize(map)
+    )
+  }
 
   # Return the map
   map

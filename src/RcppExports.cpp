@@ -178,6 +178,24 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// ac_relaxOptimization_dimAnnealing
+AcOptimization ac_relaxOptimization_dimAnnealing(AcOptimization opt, AcTiterTable titers, arma::uvec fixed_antigens, arma::uvec fixed_sera, AcOptimizerOptions options, arma::mat titer_weights, double dilution_stepsize, int target_dimensions);
+RcppExport SEXP _Racmacs_ac_relaxOptimization_dimAnnealing(SEXP optSEXP, SEXP titersSEXP, SEXP fixed_antigensSEXP, SEXP fixed_seraSEXP, SEXP optionsSEXP, SEXP titer_weightsSEXP, SEXP dilution_stepsizeSEXP, SEXP target_dimensionsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< AcOptimization >::type opt(optSEXP);
+    Rcpp::traits::input_parameter< AcTiterTable >::type titers(titersSEXP);
+    Rcpp::traits::input_parameter< arma::uvec >::type fixed_antigens(fixed_antigensSEXP);
+    Rcpp::traits::input_parameter< arma::uvec >::type fixed_sera(fixed_seraSEXP);
+    Rcpp::traits::input_parameter< AcOptimizerOptions >::type options(optionsSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type titer_weights(titer_weightsSEXP);
+    Rcpp::traits::input_parameter< double >::type dilution_stepsize(dilution_stepsizeSEXP);
+    Rcpp::traits::input_parameter< int >::type target_dimensions(target_dimensionsSEXP);
+    rcpp_result_gen = Rcpp::wrap(ac_relaxOptimization_dimAnnealing(opt, titers, fixed_antigens, fixed_sera, options, titer_weights, dilution_stepsize, target_dimensions));
+    return rcpp_result_gen;
+END_RCPP
+}
 // ac_optimize_map
 AcMap ac_optimize_map(AcMap map, int num_dims, int num_optimizations, std::string min_col_basis, arma::vec fixed_col_bases, arma::vec ag_reactivity_adjustments, arma::mat titer_weights, AcOptimizerOptions options, Rcpp::List starting_coords);
 RcppExport SEXP _Racmacs_ac_optimize_map(SEXP mapSEXP, SEXP num_dimsSEXP, SEXP num_optimizationsSEXP, SEXP min_col_basisSEXP, SEXP fixed_col_basesSEXP, SEXP ag_reactivity_adjustmentsSEXP, SEXP titer_weightsSEXP, SEXP optionsSEXP, SEXP starting_coordsSEXP) {
@@ -1903,6 +1921,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_Racmacs_ac_numeric_table_distances", (DL_FUNC) &_Racmacs_ac_numeric_table_distances, 4},
     {"_Racmacs_ac_newOptimization", (DL_FUNC) &_Racmacs_ac_newOptimization, 3},
     {"_Racmacs_ac_relaxOptimization", (DL_FUNC) &_Racmacs_ac_relaxOptimization, 7},
+    {"_Racmacs_ac_relaxOptimization_dimAnnealing", (DL_FUNC) &_Racmacs_ac_relaxOptimization_dimAnnealing, 8},
     {"_Racmacs_ac_optimize_map", (DL_FUNC) &_Racmacs_ac_optimize_map, 9},
     {"_Racmacs_ac_new_antigen", (DL_FUNC) &_Racmacs_ac_new_antigen, 1},
     {"_Racmacs_ac_ag_get_id", (DL_FUNC) &_Racmacs_ac_ag_get_id, 1},

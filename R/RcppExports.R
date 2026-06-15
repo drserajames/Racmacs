@@ -53,6 +53,10 @@ ac_relaxOptimization <- function(opt, titers, fixed_antigens, fixed_sera, option
     .Call('_Racmacs_ac_relaxOptimization', PACKAGE = 'Racmacs', opt, titers, fixed_antigens, fixed_sera, options, titer_weights, dilution_stepsize)
 }
 
+ac_relaxOptimization_dimAnnealing <- function(opt, titers, fixed_antigens, fixed_sera, options, titer_weights, dilution_stepsize, target_dimensions) {
+    .Call('_Racmacs_ac_relaxOptimization_dimAnnealing', PACKAGE = 'Racmacs', opt, titers, fixed_antigens, fixed_sera, options, titer_weights, dilution_stepsize, target_dimensions)
+}
+
 ac_optimize_map <- function(map, num_dims, num_optimizations, min_col_basis, fixed_col_bases, ag_reactivity_adjustments, titer_weights, options, starting_coords) {
     .Call('_Racmacs_ac_optimize_map', PACKAGE = 'Racmacs', map, num_dims, num_optimizations, min_col_basis, fixed_col_bases, ag_reactivity_adjustments, titer_weights, options, starting_coords)
 }

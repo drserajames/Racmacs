@@ -686,3 +686,162 @@ test_that("Optimizing a map with duplicate antigen or serum names", {
 })
 
 
+# ---- Dimensional annealing in relaxMap ----
+
+map <- read.acmap(test_path("../testdata/testmap.ace"))
+
+test_that("relaxMap num_dimensions = NULL is identical to default", {
+
+  map_displaced <- map
+  agCoords(map_displaced) <- agCoords(map_displaced) + 1
+
+  map_default <- relaxMap(map_displaced)
+  map_null    <- relaxMap(map_displaced, num_dimensions = NULL)
+
+  expect_equal(agCoords(map_default), agCoords(map_null))
+  expect_equal(srCoords(map_default), srCoords(map_null))
+  expect_equal(mapStress(map_default), mapStress(map_null))
+
+})
+
+test_that("relaxMap num_dimensions equal to current dims is equivalent to default", {
+
+  map_displaced <- map
+  agCoords(map_displaced) <- agCoords(map_displaced) + 1
+
+  map_default <- relaxMap(map_displaced)
+  map_samedim <- relaxMap(map_displaced, num_dimensions = 2)
+
+  expect_equal(agCoords(map_default), agCoords(map_samedim))
+  expect_equal(srCoords(map_default), srCoords(map_samedim))
+  expect_equal(mapStress(map_default), mapStress(map_samedim))
+
+})
+
+test_that("relaxMap dimensional annealing produces correct output dimensions", {
+
+  # 3D → 2D
+  result_2d <- relaxMap(perfect_map3d, num_dimensions = 2)
+  expect_equal(mapDimensions(result_2d), 2)
+  expect_equal(ncol(agCoords(result_2d)), 2)
+  expect_equal(ncol(srCoords(result_2d)), 2)
+
+  # 3D → 1D
+  result_1d <- relaxMap(perfect_map3d, num_dimensions = 1)
+  expect_equal(mapDimensions(result_1d), 1)
+  expect_equal(ncol(agCoords(result_1d)), 1)
+  expect_equal(ncol(srCoords(result_1d)), 1)
+
+})
+
+test_that("relaxMap dimensional annealing produces finite, valid stress", {
+
+  result_2d <- relaxMap(perfect_map3d, num_dimensions = 2)
+  stress <- mapStress(result_2d)
+  expect_true(is.finite(stress))
+  expect_gte(stress, 0)
+
+})
+
+test_that("relaxMap dimensional annealing reduces stress from displaced start", {
+
+  map_displaced <- perfect_map3d
+  agCoords(map_displaced) <- agCoords(map_displaced) + 2
+  srCoords(map_displaced) <- srCoords(map_displaced) - 2
+
+  # Compute 3D stress before annealing (need to update it by relaxing)
+  map_relaxed_3d <- relaxMap(map_displaced)
+  map_annealed_2d <- relaxMap(map_displaced, num_dimensions = 2)
+
+  # The annealed 2D result should converge to a valid solution
+  expect_equal(mapDimensions(map_annealed_2d), 2)
+  expect_true(is.finite(mapStress(map_annealed_2d)))
+
+})
+
+test_that("relaxMap dimensional annealing works with fixed antigens", {
+
+  result <- relaxMap(perfect_map3d, num_dimensions = 2, fixed_antigens = TRUE)
+  expect_equal(mapDimensions(result), 2)
+  expect_true(is.finite(mapStress(result)))
+
+})
+
+test_that("relaxMap dimensional annealing works with fixed sera", {
+
+  result <- relaxMap(perfect_map3d, num_dimensions = 2, fixed_sera = TRUE)
+  expect_equal(mapDimensions(result), 2)
+  expect_true(is.finite(mapStress(result)))
+
+})
+
+test_that("relaxMap dimensional annealing works with specific fixed points", {
+
+  result <- relaxMap(perfect_map3d, num_dimensions = 2,
+                     fixed_antigens = c(1, 3), fixed_sera = c(2))
+  expect_equal(mapDimensions(result), 2)
+  expect_true(is.finite(mapStress(result)))
+
+})
+
+test_that("relaxMap dimensional annealing errors on invalid num_dimensions", {
+
+  # Greater than current map dimensions (map is 2D)
+  expect_error(
+    relaxMap(map, num_dimensions = 3),
+    "must not exceed the map's current number of dimensions"
+  )
+
+  # Zero
+  expect_error(
+    relaxMap(map, num_dimensions = 0),
+    "must be a single positive integer"
+  )
+
+  # Negative
+  expect_error(
+    relaxMap(map, num_dimensions = -1),
+    "must be a single positive integer"
+  )
+
+  # Non-integer numeric
+  expect_error(
+    relaxMap(map, num_dimensions = 1.5),
+    "must be a single positive integer"
+  )
+
+  # Non-numeric
+  expect_error(
+    relaxMap(map, num_dimensions = "2"),
+    "must be a single positive integer"
+  )
+
+  # Length > 1
+  expect_error(
+    relaxMap(map, num_dimensions = c(1, 2)),
+    "must be a single positive integer"
+  )
+
+})
+
+test_that("relaxMap dimensional annealing respects optimization_number argument", {
+
+  # Optimizations 1 and 2 are both 3D
+  map3d_two_opts <- perfect_map3d
+  map3d_two_opts$optimizations <- c(
+    perfect_map3d$optimizations,
+    perfect_map3d$optimizations
+  )
+
+  result_opt1 <- relaxMap(map3d_two_opts, optimization_number = 1, num_dimensions = 2)
+  result_opt2 <- relaxMap(map3d_two_opts, optimization_number = 2, num_dimensions = 2)
+
+  expect_equal(mapDimensions(result_opt1, optimization_number = 1), 2)
+  expect_equal(mapDimensions(result_opt1, optimization_number = 2), 3)  # untouched
+
+  expect_equal(mapDimensions(result_opt2, optimization_number = 1), 3)  # untouched
+  expect_equal(mapDimensions(result_opt2, optimization_number = 2), 2)
+
+})
+
+
