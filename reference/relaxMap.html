@@ -70,7 +70,8 @@ in the selected or specified optimization.</p>
 <span>  fixed_antigens <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  fixed_sera <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  titer_weights <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  options <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span></span>
+<span>  options <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  num_dimensions <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -100,6 +101,18 @@ in the selected or specified optimization.</p>
 
 <dt id="arg-options">options<a class="anchor" aria-label="anchor" href="#arg-options"></a></dt>
 <dd><p>List of named optimizer options, see <code><a href="RacOptimizer.options.html">RacOptimizer.options()</a></code></p></dd>
+
+
+<dt id="arg-num-dimensions">num_dimensions<a class="anchor" aria-label="anchor" href="#arg-num-dimensions"></a></dt>
+<dd><p>Target number of dimensions for dimensional annealing.
+When <code>NULL</code> (default) the map is relaxed in its current number of dimensions.
+When set to a positive integer less than the map's current number of
+dimensions, dimensional annealing is performed: the map is first relaxed in
+its current dimensionality, then projected to the next lower dimension via
+PCA, relaxed again, and so on, until the target dimensionality is reached.
+The returned map will have <code>num_dimensions</code> dimensions.  Setting
+<code>num_dimensions</code> equal to the map's current dimensions is equivalent to
+the default behaviour.</p></dd>
 
 </dl></div>
     <div id="value">
