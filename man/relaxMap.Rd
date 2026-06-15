@@ -10,7 +10,8 @@ relaxMap(
   fixed_antigens = FALSE,
   fixed_sera = FALSE,
   titer_weights = NULL,
-  options = list()
+  options = list(),
+  num_dimensions = NULL
 )
 }
 \arguments{
@@ -25,6 +26,16 @@ relaxMap(
 \item{titer_weights}{An optional matrix of weights to assign each titer when optimizing}
 
 \item{options}{List of named optimizer options, see \code{RacOptimizer.options()}}
+
+\item{num_dimensions}{Target number of dimensions for dimensional annealing.
+When \code{NULL} (default) the map is relaxed in its current number of dimensions.
+When set to a positive integer less than the map's current number of
+dimensions, dimensional annealing is performed: the map is first relaxed in
+its current dimensionality, then projected to the next lower dimension via
+PCA, relaxed again, and so on, until the target dimensionality is reached.
+The returned map will have \code{num_dimensions} dimensions.  Setting
+\code{num_dimensions} equal to the map's current dimensions is equivalent to
+the default behaviour.}
 }
 \value{
 Returns an acmap object with the optimization relaxed.
